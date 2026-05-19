@@ -444,6 +444,35 @@
   </div>
 </div>
 
+<!-- =========================== CONFIRM MODAL =========================== -->
+<div id="confirm-modal" class="hidden fixed inset-0 z-[55] flex items-center justify-center p-4 lightbox">
+  <div id="confirm-modal-card" class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden fade-in">
+    <!-- Header with icon -->
+    <div id="confirm-modal-header" class="relative px-6 pt-7 pb-5 text-center">
+      <div class="absolute inset-0 batik-pattern opacity-40 pointer-events-none"></div>
+      <div id="confirm-modal-icon-wrap" class="relative w-14 h-14 mx-auto rounded-2xl flex items-center justify-center mb-3">
+        <svg id="confirm-modal-icon" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"></svg>
+      </div>
+      <h2 id="confirm-modal-title" class="relative font-serif font-semibold text-lg text-brand-900">Konfirmasi</h2>
+    </div>
+    <!-- Body -->
+    <div class="px-6 pb-5">
+      <p id="confirm-modal-message" class="text-sm text-slate-600 leading-relaxed text-center"></p>
+      <div id="confirm-modal-target" class="hidden mt-4 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 font-medium break-words"></div>
+      <div id="confirm-modal-note" class="hidden mt-3 text-xs text-slate-500 bg-accent-50 border border-accent-200 rounded-lg px-3 py-2"></div>
+    </div>
+    <!-- Actions -->
+    <div class="px-6 pb-6 flex flex-col-reverse sm:flex-row gap-2 sm:gap-3">
+      <button id="confirm-modal-cancel" type="button" class="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 transition">
+        Batal
+      </button>
+      <button id="confirm-modal-ok" type="button" class="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition">
+        Konfirmasi
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- =========================== TOAST =========================== -->
 <div id="toast-container" class="fixed top-5 right-5 z-[60] space-y-2"></div>
 
@@ -541,6 +570,90 @@ function photoPlaceholder(seed, label = '', size = 'medium') {
   const [c1, c2] = colors[seed % colors.length];
   return `<div class="photo-svg w-full h-full" style="--c1:${c1};--c2:${c2}"><div class="photo-label">${label}</div></div>`;
 }
+
+/* ============ CUSTOM CONFIRM MODAL ============ */
+const CONFIRM_VARIANTS = {
+  danger: {
+    iconBg: 'bg-red-100',
+    iconColor: 'text-red-600',
+    okClass: 'bg-red-600 hover:bg-red-700',
+    iconPath: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.732 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>'
+  },
+  warning: {
+    iconBg: 'bg-accent-100',
+    iconColor: 'text-accent-600',
+    okClass: 'bg-accent-500 hover:bg-accent-600',
+    iconPath: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>'
+  },
+  info: {
+    iconBg: 'bg-brand-100',
+    iconColor: 'text-brand-700',
+    okClass: 'bg-brand-700 hover:bg-brand-800',
+    iconPath: '<path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>'
+  },
+  success: {
+    iconBg: 'bg-emerald-100',
+    iconColor: 'text-emerald-600',
+    okClass: 'bg-emerald-600 hover:bg-emerald-700',
+    iconPath: '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>'
+  },
+};
+
+let _confirmResolver = null;
+
+function confirmDialog({ title = 'Konfirmasi', message = '', target = '', note = '', confirmText = 'Konfirmasi', cancelText = 'Batal', variant = 'info' } = {}) {
+  return new Promise((resolve) => {
+    _confirmResolver = resolve;
+    const v = CONFIRM_VARIANTS[variant] || CONFIRM_VARIANTS.info;
+
+    $('#confirm-modal-title').textContent = title;
+    $('#confirm-modal-message').textContent = message;
+
+    const tgt = $('#confirm-modal-target');
+    if (target) { tgt.textContent = target; tgt.classList.remove('hidden'); }
+    else tgt.classList.add('hidden');
+
+    const noteEl = $('#confirm-modal-note');
+    if (note) { noteEl.textContent = note; noteEl.classList.remove('hidden'); }
+    else noteEl.classList.add('hidden');
+
+    const iconWrap = $('#confirm-modal-icon-wrap');
+    iconWrap.className = `relative w-14 h-14 mx-auto rounded-2xl flex items-center justify-center mb-3 ${v.iconBg}`;
+    const icon = $('#confirm-modal-icon');
+    icon.className = `w-7 h-7 ${v.iconColor}`;
+    icon.innerHTML = v.iconPath;
+
+    const okBtn = $('#confirm-modal-ok');
+    okBtn.className = `flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition ${v.okClass}`;
+    okBtn.textContent = confirmText;
+
+    $('#confirm-modal-cancel').textContent = cancelText;
+
+    $('#confirm-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => okBtn.focus(), 50);
+  });
+}
+
+function _closeConfirm(result) {
+  $('#confirm-modal').classList.add('hidden');
+  document.body.style.overflow = '';
+  if (_confirmResolver) { _confirmResolver(result); _confirmResolver = null; }
+}
+
+document.addEventListener('click', (e) => {
+  if (e.target.id === 'confirm-modal-ok') _closeConfirm(true);
+  if (e.target.id === 'confirm-modal-cancel') _closeConfirm(false);
+  // click outside card to cancel
+  if (e.target.id === 'confirm-modal') _closeConfirm(false);
+});
+
+document.addEventListener('keydown', (e) => {
+  if (!$('#confirm-modal').classList.contains('hidden')) {
+    if (e.key === 'Escape') _closeConfirm(false);
+    if (e.key === 'Enter') _closeConfirm(true);
+  }
+});
 
 function toast(msg, type = 'success') {
   const colors = {
@@ -1203,7 +1316,16 @@ function exitAdmin() {
   $('#public-app').classList.remove('hidden');
   route('/');
 }
-function adminLogout() {
+async function adminLogout() {
+  const ok = await confirmDialog({
+    variant: 'warning',
+    title: 'Keluar dari Panel Admin?',
+    message: 'Anda akan dialihkan ke halaman publik dan perlu masuk kembali untuk mengakses panel pengelolaan.',
+    target: currentUser ? `${currentUser.name} (${currentUser.email})` : '',
+    confirmText: 'Ya, Keluar',
+    cancelText: 'Batal',
+  });
+  if (!ok) return;
   currentUser = null;
   $('#admin-app').classList.add('hidden');
   $('#public-app').classList.remove('hidden');
@@ -1483,17 +1605,38 @@ document.addEventListener('change', (e) => {
   if (e.target.id === 'evt-cat')  { eventsTableState.cat  = e.target.value; eventsTableState.page = 1; renderEventsTableBody(); }
 });
 
-function togglePublish(id) {
+async function togglePublish(id) {
   const e = EVENTS.find(x => x.id === id);
-  e.is_published = !e.is_published;
+  const willPublish = !e.is_published;
+  const ok = await confirmDialog({
+    variant: willPublish ? 'success' : 'warning',
+    title: willPublish ? 'Publikasikan Kegiatan?' : 'Sembunyikan dari Publik?',
+    message: willPublish
+      ? 'Kegiatan ini akan tampil di halaman publik dan dapat diakses oleh seluruh pengunjung.'
+      : 'Kegiatan akan disembunyikan dari halaman publik dan hanya dapat diakses oleh admin. Data tidak akan dihapus.',
+    target: e.title,
+    confirmText: willPublish ? 'Ya, Publikasikan' : 'Ya, Jadikan Draf',
+    cancelText: 'Batal',
+  });
+  if (!ok) return;
+  e.is_published = willPublish;
   logActivity(currentUser.name, 'update', `Status publikasi: ${e.title} → ${e.is_published ? 'Publik' : 'Draf'}`);
   renderEventsTableBody();
   toast(`Kegiatan ${e.is_published ? 'dipublikasikan' : 'disimpan sebagai draf'}`);
 }
 
-function deleteEvent(id) {
+async function deleteEvent(id) {
   const e = EVENTS.find(x => x.id === id);
-  if (!confirm(`Yakin hapus "${e.title}"? Foto-fotonya akan ikut terhapus.`)) return;
+  const ok = await confirmDialog({
+    variant: 'danger',
+    title: 'Hapus Kegiatan?',
+    message: 'Tindakan ini akan menghapus kegiatan beserta seluruh foto yang terkait. Data yang dihapus tidak dapat dikembalikan.',
+    target: e.title,
+    note: `${e.photo_count} foto akan ikut terhapus dari arsip.`,
+    confirmText: 'Ya, Hapus',
+    cancelText: 'Batal',
+  });
+  if (!ok) return;
   EVENTS = EVENTS.filter(x => x.id !== id);
   logActivity(currentUser.name, 'delete', `Kegiatan: ${e.title}`);
   renderEventsTableBody();
@@ -1751,13 +1894,31 @@ function addCategory(ev) {
   adminRoute('categories');
 }
 
-function deleteCategory(id) {
+async function deleteCategory(id) {
   const c = CATEGORIES.find(x => x.id === id);
-  if (!confirm(`Hapus kategori "${c.name}"?`)) return;
-  if (EVENTS.some(e => e.category_id === id)) {
-    toast('Kategori masih dipakai oleh kegiatan. Tidak bisa dihapus.', 'error');
+  const inUse = EVENTS.filter(e => e.category_id === id).length;
+
+  if (inUse > 0) {
+    await confirmDialog({
+      variant: 'warning',
+      title: 'Kategori Masih Digunakan',
+      message: 'Kategori ini tidak dapat dihapus karena masih digunakan oleh kegiatan yang terarsip. Pindahkan atau hapus kegiatan terkait terlebih dahulu.',
+      target: `${c.name} — digunakan oleh ${inUse} kegiatan`,
+      confirmText: 'Mengerti',
+      cancelText: 'Tutup',
+    });
     return;
   }
+
+  const ok = await confirmDialog({
+    variant: 'danger',
+    title: 'Hapus Kategori?',
+    message: 'Kategori akan dihapus secara permanen dari sistem.',
+    target: c.name,
+    confirmText: 'Ya, Hapus',
+    cancelText: 'Batal',
+  });
+  if (!ok) return;
   const idx = CATEGORIES.indexOf(c);
   CATEGORIES.splice(idx, 1);
   logActivity(currentUser.name, 'delete', `Kategori: ${c.name}`);
@@ -1856,9 +2017,18 @@ function addUser(ev) {
   toast(`Pengguna "${name}" ditambahkan`);
   adminRoute('users');
 }
-function deleteUser(id) {
+async function deleteUser(id) {
   const u = USERS.find(x => x.id === id);
-  if (!confirm(`Hapus pengguna "${u.name}"?`)) return;
+  const ok = await confirmDialog({
+    variant: 'danger',
+    title: 'Hapus Pengguna?',
+    message: 'Pengguna ini tidak akan lagi dapat masuk ke panel admin. Riwayat aktivitas yang telah dilakukan akan tetap tersimpan di log audit.',
+    target: `${u.name} (${u.email})`,
+    note: u.role === 'super_admin' ? 'Perhatian: pengguna ini berperan sebagai Super Admin.' : '',
+    confirmText: 'Ya, Hapus',
+    cancelText: 'Batal',
+  });
+  if (!ok) return;
   const i = USERS.indexOf(u);
   USERS.splice(i, 1);
   logActivity(currentUser.name, 'delete', `Pengguna: ${u.name}`);
