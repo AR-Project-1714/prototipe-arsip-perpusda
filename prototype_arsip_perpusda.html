@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Arsip Digital Perpusda Bontang — Kalimantan Timur</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          serif: ['Lora', 'Georgia', 'serif'],
+        },
+        colors: {
+          brand: {
+            50:  '#eef4fb',
+            100: '#d6e4f3',
+            200: '#aac6e6',
+            300: '#7aa5d6',
+            400: '#4a83c4',
+            500: '#2a66ad',
+            600: '#1d4f8f',
+            700: '#163d70',
+            800: '#102c55',
+            900: '#0a1d3a',
+          },
+          accent: {
+            50:  '#fef6ec',
+            100: '#fce6c4',
+            200: '#f8cf8c',
+            300: '#f3b357',
+            400: '#ec9628',
+            500: '#d97d10',
+            600: '#b6620a',
+            700: '#8e4a09',
+            800: '#69370a',
+            900: '#4b2708',
+          }
+        },
+        boxShadow: {
+          'soft': '0 4px 20px -8px rgba(16, 44, 85, 0.15)',
+          'card': '0 8px 24px -12px rgba(16, 44, 85, 0.25)',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+  .font-serif { font-family: 'Lora', Georgia, serif; }
+
+  /* Batik-inspired pattern overlay */
+  .batik-pattern {
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(217, 125, 16, 0.08) 0%, transparent 25%),
+      radial-gradient(circle at 80% 70%, rgba(42, 102, 173, 0.08) 0%, transparent 30%),
+      radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
+  }
+
+  .photo-card {
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s;
+  }
+  .photo-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px -16px rgba(16, 44, 85, 0.35);
+  }
+
+  /* Lightbox */
+  .lightbox {
+    background: rgba(10, 29, 58, 0.95);
+    backdrop-filter: blur(8px);
+  }
+
+  .fade-in { animation: fadeIn .35s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px);} to { opacity: 1; transform: translateY(0);} }
+
+  /* Hide scrollbar but allow scrolling */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Custom checkbox / file area */
+  .upload-zone {
+    border: 2px dashed #aac6e6;
+    transition: all .2s;
+  }
+  .upload-zone.dragover, .upload-zone:hover {
+    border-color: #d97d10;
+    background-color: #fef6ec;
+  }
+
+  /* Active nav link */
+  .nav-link.active {
+    color: #d97d10;
+    font-weight: 600;
+  }
+  .nav-link.active::after {
+    transform: scaleX(1);
+  }
+  .nav-link::after {
+    content: '';
+    display: block;
+    height: 2px;
+    background: #d97d10;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .25s;
+    margin-top: 4px;
+  }
+  .nav-link:hover::after { transform: scaleX(1); }
+
+  .chip {
+    transition: all .2s;
+  }
+  .chip.active {
+    background: #1d4f8f;
+    color: white;
+    border-color: #1d4f8f;
+  }
+
+  /* Sidebar active link */
+  .sidebar-link.active {
+    background: rgba(217, 125, 16, 0.12);
+    color: #d97d10;
+    border-right: 3px solid #d97d10;
+  }
+
+  /* Aspect ratio helper for placeholder photos */
+  .aspect-photo {
+    aspect-ratio: 4 / 3;
+  }
+
+  /* Toast */
+  .toast {
+    animation: slideIn .3s ease-out, fadeOutToast .3s ease-in 2.5s forwards;
+  }
+  @keyframes slideIn { from { transform: translateX(100%); opacity: 0;} to { transform: translateX(0); opacity: 1;} }
+  @keyframes fadeOutToast { to { opacity: 0; transform: translateX(20%);} }
+
+  /* SVG illustration placeholder for photos */
+  .photo-svg {
+    background: linear-gradient(135deg, var(--c1, #1d4f8f), var(--c2, #2a66ad));
+    position: relative;
+    overflow: hidden;
+  }
+  .photo-svg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(255,255,255,.25) 0%, transparent 40%),
+      radial-gradient(circle at 70% 80%, rgba(217, 125, 16, .35) 0%, transparent 45%);
+  }
+  .photo-svg .photo-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    text-align: center;
+    padding: 1rem;
+    text-shadow: 0 2px 8px rgba(0,0,0,.4);
+    font-size: .9rem;
+  }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+<!-- =========================== PUBLIC SHELL =========================== -->
+<div id="public-app">
+
+  <!-- Top utility bar -->
+  <div class="bg-brand-900 text-brand-100 text-xs">
+    <div class="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5h18M3 12h18M3 19h18"/></svg>
+        Pemerintah Kota Bontang — Dinas Perpustakaan & Kearsipan Daerah
+      </div>
+      <div class="hidden sm:flex items-center gap-4">
+        <a href="#" class="hover:text-white">Kontak</a>
+        <a href="#" class="hover:text-white">Bantuan</a>
+        <button onclick="showAdminLogin()" class="hover:text-accent-300 inline-flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zM12 14c-4 0-7 2-7 5v1h14v-1c0-3-3-5-7-5z"/></svg>
+          Login Admin
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header / Nav -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-soft">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="#/" onclick="route('/')" class="flex items-center gap-3">
+        <!-- Logo: stylized book + flame (Bontang/East Kalimantan) -->
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-700 to-brand-500 flex items-center justify-center shadow-card">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h4v16H6a2 2 0 01-2-2V6z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 4h4a2 2 0 012 2v12a2 2 0 01-2 2h-4V4z" fill="rgba(217,125,16,.25)"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 4v16" />
+          </svg>
+        </div>
+        <div>
+          <div class="font-bold text-brand-800 text-lg leading-tight">Arsip Digital Perpusda</div>
+          <div class="text-xs text-slate-500 leading-tight">Kota Bontang · Kalimantan Timur</div>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-8 text-sm">
+        <a href="#/" onclick="route('/')" data-nav="/" class="nav-link text-slate-700">Beranda</a>
+        <a href="#/jelajah" onclick="route('/jelajah')" data-nav="/jelajah" class="nav-link text-slate-700">Jelajah Arsip</a>
+        <a href="#/tahun" onclick="route('/tahun')" data-nav="/tahun" class="nav-link text-slate-700">Lini Masa</a>
+        <a href="#/tentang" onclick="route('/tentang')" data-nav="/tentang" class="nav-link text-slate-700">Tentang</a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <button onclick="openSearch()" class="p-2 rounded-lg hover:bg-slate-100" aria-label="Cari">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 110-16 8 8 0 010 16z"/></svg>
+        </button>
+        <button onclick="document.getElementById('mobile-nav').classList.toggle('hidden')" class="md:hidden p-2 rounded-lg hover:bg-slate-100">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile nav -->
+    <div id="mobile-nav" class="hidden md:hidden border-t border-slate-200 bg-white">
+      <div class="px-4 py-3 space-y-2 text-sm">
+        <a href="#/" onclick="route('/')" class="block py-2">Beranda</a>
+        <a href="#/jelajah" onclick="route('/jelajah')" class="block py-2">Jelajah Arsip</a>
+        <a href="#/tahun" onclick="route('/tahun')" class="block py-2">Lini Masa</a>
+        <a href="#/tentang" onclick="route('/tentang')" class="block py-2">Tentang</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main public content (routed) -->
+  <main id="public-main"></main>
+
+  <!-- Footer -->
+  <footer class="bg-brand-900 text-brand-100 mt-16">
+    <div class="max-w-7xl mx-auto px-4 py-12 grid md:grid-cols-4 gap-8">
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-lg bg-accent-500/20 border border-accent-400/40 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-accent-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"/></svg>
+          </div>
+          <div>
+            <div class="font-bold text-white">Dinas Perpustakaan & Kearsipan Daerah</div>
+            <div class="text-xs">Kota Bontang, Kalimantan Timur</div>
+          </div>
+        </div>
+        <p class="text-sm leading-relaxed text-brand-200">
+          Arsip Digital Perpusda menyimpan dan menyajikan dokumentasi visual perjalanan kegiatan kepustakaan
+          dan literasi di Kota Bontang dari tahun ke tahun, sebagai memori kolektif yang dapat diakses publik.
+        </p>
+      </div>
+      <div>
+        <div class="font-semibold text-white mb-3">Tautan</div>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#/jelajah" onclick="route('/jelajah')" class="hover:text-accent-300">Jelajah Arsip</a></li>
+          <li><a href="#/tahun" onclick="route('/tahun')" class="hover:text-accent-300">Lini Masa</a></li>
+          <li><a href="#/tentang" onclick="route('/tentang')" class="hover:text-accent-300">Tentang Sistem</a></li>
+          <li><button onclick="showAdminLogin()" class="hover:text-accent-300">Login Admin</button></li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-semibold text-white mb-3">Hubungi Kami</div>
+        <ul class="space-y-2 text-sm">
+          <li>Jl. Awang Long No. 1, Bontang</li>
+          <li>perpusda@bontangkota.go.id</li>
+          <li>(0548) 123-4567</li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-brand-800">
+      <div class="max-w-7xl mx-auto px-4 py-4 text-xs flex flex-col sm:flex-row justify-between items-center gap-2 text-brand-300">
+        <div>© 2026 Pemerintah Kota Bontang. Hak Cipta Dilindungi.</div>
+        <div>Versi 1.0 — Prototype</div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- =========================== ADMIN SHELL =========================== -->
+<div id="admin-app" class="hidden min-h-screen bg-slate-100">
+  <!-- Sidebar -->
+  <aside class="fixed inset-y-0 left-0 w-64 bg-brand-900 text-brand-100 z-30 flex flex-col">
+    <div class="p-5 border-b border-brand-800">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-accent-500 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"/></svg>
+        </div>
+        <div>
+          <div class="font-bold text-white text-sm">Panel Admin</div>
+          <div class="text-xs text-brand-300">Arsip Perpusda Bontang</div>
+        </div>
+      </div>
+    </div>
+    <nav class="flex-1 py-4 overflow-y-auto no-scrollbar">
+      <div class="px-5 py-2 text-xs uppercase tracking-wide text-brand-400">Menu Utama</div>
+      <a href="#" onclick="adminRoute('dashboard')" data-admin-nav="dashboard" class="sidebar-link flex items-center gap-3 px-5 py-2.5 text-sm hover:bg-brand-800 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2 7-7 7 7 2 2v9a2 2 0 01-2 2h-4v-6h-6v6H5a2 2 0 01-2-2v-9z"/></svg>
+        Dashboard
+      </a>
+      <a href="#" onclick="adminRoute('events')" data-admin-nav="events" class="sidebar-link flex items-center gap-3 px-5 py-2.5 text-sm hover:bg-brand-800 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M3 11h18M5 5h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z"/></svg>
+        Kegiatan
+      </a>
+      <a href="#" onclick="adminRoute('photos')" data-admin-nav="photos" class="sidebar-link flex items-center gap-3 px-5 py-2.5 text-sm hover:bg-brand-800 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z M4 16l4-4 5 5 3-3 4 4"/><circle cx="9" cy="9" r="1.5" fill="currentColor" stroke="none"/></svg>
+        Foto
+      </a>
+      <a href="#" onclick="adminRoute('categories')" data-admin-nav="categories" class="sidebar-link flex items-center gap-3 px-5 py-2.5 text-sm hover:bg-brand-800 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5a2 2 0 011.41.59l7 7a2 2 0 010 2.82l-7 7a2 2 0 01-2.82 0l-7-7A2 2 0 013 11V6a3 3 0 013-3h1z"/></svg>
+        Kategori
+      </a>
+      <div class="px-5 py-2 mt-3 text-xs uppercase tracking-wide text-brand-400">Administrasi</div>
+      <a href="#" onclick="adminRoute('users')" data-admin-nav="users" class="sidebar-link flex items-center gap-3 px-5 py-2.5 text-sm hover:bg-brand-800 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zM5 20a7 7 0 0114 0"/></svg>
+        Pengguna
+      </a>
+      <a href="#" onclick="adminRoute('logs')" data-admin-nav="logs" class="sidebar-link flex items-center gap-3 px-5 py-2.5 text-sm hover:bg-brand-800 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z"/></svg>
+        Log Aktivitas
+      </a>
+    </nav>
+    <div class="p-4 border-t border-brand-800">
+      <div id="admin-user-info" class="flex items-center gap-3 mb-3">
+        <div class="w-9 h-9 rounded-full bg-accent-500 flex items-center justify-center font-bold text-white text-sm">A</div>
+        <div class="text-xs">
+          <div id="admin-user-name" class="text-white font-medium">Administrator</div>
+          <div id="admin-user-role" class="text-brand-300">Super Admin</div>
+        </div>
+      </div>
+      <button onclick="adminLogout()" class="w-full text-xs bg-brand-800 hover:bg-brand-700 text-brand-100 py-2 rounded-lg transition flex items-center justify-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h6a2 2 0 012 2v1"/></svg>
+        Keluar
+      </button>
+    </div>
+  </aside>
+
+  <!-- Admin main content -->
+  <div class="ml-64 min-h-screen flex flex-col">
+    <!-- Topbar -->
+    <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between">
+      <div>
+        <h1 id="admin-page-title" class="text-xl font-bold text-brand-900">Dashboard</h1>
+        <div id="admin-page-subtitle" class="text-xs text-slate-500">Ringkasan sistem arsip digital</div>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="relative p-2 rounded-lg hover:bg-slate-100">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.4-1.4A7 7 0 0119 11V8a7 7 0 10-14 0v3c0 1.5-.5 2.9-1.6 4L2 17h5m8 0a3 3 0 11-6 0"/></svg>
+          <span class="absolute top-1 right-1 w-2 h-2 bg-accent-500 rounded-full"></span>
+        </button>
+        <a href="#/" onclick="exitAdmin()" class="text-sm text-brand-600 hover:text-brand-800 inline-flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          Lihat sisi publik
+        </a>
+      </div>
+    </header>
+
+    <!-- Admin content -->
+    <main id="admin-main" class="flex-1 p-8"></main>
+  </div>
+</div>
+
+<!-- =========================== ADMIN LOGIN MODAL =========================== -->
+<div id="admin-login-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 lightbox">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden fade-in">
+    <div class="bg-gradient-to-br from-brand-800 to-brand-600 px-6 py-8 text-center text-white relative">
+      <div class="absolute inset-0 batik-pattern opacity-50"></div>
+      <div class="relative">
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-white/15 backdrop-blur flex items-center justify-center mb-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-accent-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zM12 14c-4 0-7 2-7 5v1h14v-1c0-3-3-5-7-5z"/></svg>
+        </div>
+        <h2 class="font-bold text-lg">Login Panel Admin</h2>
+        <p class="text-xs text-brand-200 mt-1">Arsip Digital Perpusda Bontang</p>
+      </div>
+    </div>
+    <form onsubmit="handleAdminLogin(event)" class="p-6 space-y-4">
+      <div>
+        <label class="text-xs font-medium text-slate-700 block mb-1">Email</label>
+        <input id="login-email" type="email" required value="admin@perpusda.id"
+          class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+      </div>
+      <div>
+        <label class="text-xs font-medium text-slate-700 block mb-1">Kata Sandi</label>
+        <input id="login-password" type="password" required value="admin123"
+          class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+      </div>
+      <div id="login-error" class="hidden text-xs text-red-600 bg-red-50 border border-red-200 px-3 py-2 rounded-lg"></div>
+      <button type="submit" class="w-full bg-brand-700 hover:bg-brand-800 text-white py-2.5 rounded-lg font-medium text-sm transition">Masuk</button>
+      <button type="button" onclick="closeAdminLogin()" class="w-full text-slate-500 hover:text-slate-700 text-xs">Batal</button>
+      <div class="text-xs text-slate-500 bg-slate-50 px-3 py-2 rounded-lg border border-slate-200">
+        <strong>Demo:</strong> admin@perpusda.id / admin123
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- =========================== LIGHTBOX =========================== -->
+<div id="lightbox" class="hidden fixed inset-0 z-50 lightbox flex items-center justify-center p-4">
+  <button onclick="closeLightbox()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+  </button>
+  <button onclick="lightboxPrev()" class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+  </button>
+  <button onclick="lightboxNext()" class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+  </button>
+  <div class="max-w-5xl w-full">
+    <div id="lightbox-photo" class="aspect-photo rounded-xl overflow-hidden shadow-2xl"></div>
+    <div class="mt-4 flex items-center justify-between text-white">
+      <div>
+        <div id="lightbox-caption" class="font-semibold"></div>
+        <div id="lightbox-meta" class="text-sm text-brand-200"></div>
+      </div>
+      <button onclick="downloadPhoto()" class="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-lg text-sm font-medium inline-flex items-center gap-2 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+        Unduh
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================== SEARCH OVERLAY =========================== -->
+<div id="search-overlay" class="hidden fixed inset-0 z-50 lightbox p-4">
+  <div class="max-w-2xl mx-auto mt-20">
+    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+      <div class="flex items-center px-5 py-4 border-b border-slate-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 110-16 8 8 0 010 16z"/></svg>
+        <input id="search-input" type="text" placeholder="Cari kegiatan, kategori, atau tahun..." class="flex-1 outline-none text-sm" autofocus>
+        <button onclick="closeSearch()" class="text-xs text-slate-500 hover:text-slate-700 ml-3">ESC</button>
+      </div>
+      <div id="search-results" class="max-h-96 overflow-y-auto"></div>
+    </div>
+  </div>
+</div>
+
+<!-- =========================== TOAST =========================== -->
+<div id="toast-container" class="fixed top-5 right-5 z-[60] space-y-2"></div>
+
+<!-- =========================== APP SCRIPT =========================== -->
+<script>
+/* ============ MOCK DATA ============ */
+const CATEGORIES = [
+  { id: 1, slug: 'literasi',   name: 'Literasi',           color: '#2a66ad' },
+  { id: 2, slug: 'pelatihan',  name: 'Pelatihan',          color: '#d97d10' },
+  { id: 3, slug: 'kunjungan',  name: 'Kunjungan',          color: '#0d9488' },
+  { id: 4, slug: 'seminar',    name: 'Seminar & Diskusi',  color: '#7c3aed' },
+  { id: 5, slug: 'lomba',      name: 'Lomba',              color: '#dc2626' },
+  { id: 6, slug: 'pameran',    name: 'Pameran',            color: '#059669' },
+];
+
+const USERS = [
+  { id: 1, name: 'Siti Nurhaliza', email: 'admin@perpusda.id',  role: 'super_admin', last_login: '2026-05-19 08:24', avatar: 'SN' },
+  { id: 2, name: 'Budi Hartono',   email: 'budi@perpusda.id',   role: 'admin',       last_login: '2026-05-18 14:02', avatar: 'BH' },
+  { id: 3, name: 'Rina Sari',      email: 'rina@perpusda.id',   role: 'admin',       last_login: '2026-05-17 10:15', avatar: 'RS' },
+];
+
+const eventTemplates = [
+  // 2024
+  { title: 'Festival Literasi Pesisir Bontang 2024', category: 1, year: 2024, date: '2024-11-12', location: 'Pantai Beras Basah', photos: 18, description: 'Festival tahunan yang mengangkat literasi pesisir dengan menggabungkan budaya bahari dan kegiatan membaca di alam terbuka.' },
+  { title: 'Pelatihan Pustakawan Digital Angkatan III', category: 2, year: 2024, date: '2024-09-23', location: 'Aula Perpusda Bontang', photos: 12, description: 'Pelatihan intensif bagi pustakawan untuk pengelolaan koleksi digital, repositori, dan layanan referensi daring.' },
+  { title: 'Kunjungan Siswa SMA Yayasan Pupuk Kaltim', category: 3, year: 2024, date: '2024-08-15', location: 'Ruang Baca Utama', photos: 9,  description: 'Kunjungan edukatif 120 siswa untuk mengenal layanan perpustakaan modern dan budaya literasi.' },
+  { title: 'Seminar Literasi Digital untuk ASN Kota Bontang', category: 4, year: 2024, date: '2024-07-08', location: 'Hotel Equator Bontang', photos: 14, description: 'Seminar bersama narasumber nasional membahas literasi digital dan keamanan informasi di lingkungan birokrasi.' },
+  { title: 'Lomba Mendongeng Bahasa Daerah Kutai',    category: 5, year: 2024, date: '2024-04-20', location: 'Gedung PKK Bontang', photos: 22, description: 'Lomba mendongeng tingkat SD menggunakan bahasa daerah Kutai untuk melestarikan kearifan lokal.' },
+  // 2023
+  { title: 'Pameran Naskah Kuno Kesultanan Kutai',    category: 6, year: 2023, date: '2023-10-10', location: 'Galeri Perpusda', photos: 26, description: 'Pameran kolaborasi dengan Museum Mulawarman menampilkan replika naskah kuno dan literatur klasik.' },
+  { title: 'Bedah Buku "Memori Bontang"',             category: 4, year: 2023, date: '2023-08-17', location: 'Aula Perpusda Bontang', photos: 8, description: 'Bedah buku yang menceritakan sejarah perkembangan Kota Bontang dari kampung nelayan hingga kota industri.' },
+  { title: 'Kunjungan TK Tunas Bangsa',               category: 3, year: 2023, date: '2023-05-22', location: 'Ruang Anak Perpusda', photos: 11, description: 'Program ramah anak: dongeng, mewarnai, dan pengenalan dunia buku untuk usia dini.' },
+  { title: 'Pelatihan Pengelolaan Arsip Statis',      category: 2, year: 2023, date: '2023-03-14', location: 'Aula Perpusda Bontang', photos: 10, description: 'Pelatihan teknis untuk staf OPD se-Kota Bontang dalam pengelolaan arsip statis dan dinamis.' },
+  // 2022
+  { title: 'Festival Buku Anak Nusantara',            category: 1, year: 2022, date: '2022-11-19', location: 'Lapangan Bessai Berinta', photos: 32, description: 'Festival buku anak yang menghadirkan ratusan judul, dongeng panggung, dan workshop ilustrasi.' },
+  { title: 'Lomba Resensi Buku Tingkat SMP',          category: 5, year: 2022, date: '2022-09-05', location: 'Aula Perpusda Bontang', photos: 7, description: 'Lomba meresensi buku bagi pelajar SMP se-Bontang untuk menumbuhkan kemampuan analisis literatur.' },
+  { title: 'Seminar Sastra & Identitas Kota',         category: 4, year: 2022, date: '2022-06-11', location: 'Hotel Bintang Sintuk', photos: 9, description: 'Seminar yang membahas peran sastra lokal dalam membentuk identitas Kota Bontang.' },
+  // 2021
+  { title: 'Pelatihan Literasi Informasi Daring',     category: 2, year: 2021, date: '2021-10-02', location: 'Daring (Zoom)', photos: 6, description: 'Pelatihan virtual semasa pandemi untuk literasi informasi dan verifikasi sumber.' },
+  { title: 'Kunjungan Komunitas Ibu Belajar',         category: 3, year: 2021, date: '2021-08-12', location: 'Perpusda Bontang', photos: 8, description: 'Kunjungan terjadwal komunitas ibu-ibu untuk program literasi keluarga.' },
+  { title: 'Lomba Poster Literasi Pandemi',           category: 5, year: 2021, date: '2021-05-30', location: 'Online', photos: 15, description: 'Lomba desain poster digital bertema "Membaca di Masa Pandemi" tingkat pelajar.' },
+  // 2020
+  { title: 'Peresmian Pojok Baca Kelurahan',          category: 1, year: 2020, date: '2020-12-10', location: 'Kelurahan Tanjung Laut', photos: 12, description: 'Peresmian 5 pojok baca di kelurahan-kelurahan se-Kota Bontang.' },
+  { title: 'Pameran Foto "Bontang Membaca"',          category: 6, year: 2020, date: '2020-09-18', location: 'Galeri Perpusda', photos: 20, description: 'Pameran foto dokumentasi budaya membaca masyarakat Bontang sepanjang dekade terakhir.' },
+  { title: 'Pelatihan Penulisan Kreatif',             category: 2, year: 2020, date: '2020-02-14', location: 'Aula Perpusda Bontang', photos: 9, description: 'Pelatihan penulisan kreatif bersama penulis lokal untuk komunitas muda Bontang.' },
+];
+
+let EVENTS = eventTemplates.map((t, i) => ({
+  id: i + 1,
+  slug: t.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+  title: t.title,
+  description: t.description,
+  category_id: t.category,
+  date: t.date,
+  year: t.year,
+  location: t.location,
+  is_published: true,
+  created_by: (i % 3) + 1,
+  photo_count: t.photos,
+  cover_seed: i + 1,
+}));
+
+let ACTIVITY_LOGS = [
+  { id: 1, user: 'Siti Nurhaliza', action: 'create', target: 'Kegiatan: Festival Literasi Pesisir Bontang 2024', time: '2026-05-19 08:24' },
+  { id: 2, user: 'Budi Hartono',   action: 'upload', target: '18 foto ke Festival Literasi Pesisir 2024',   time: '2026-05-18 16:11' },
+  { id: 3, user: 'Rina Sari',      action: 'update', target: 'Kegiatan: Pelatihan Pustakawan Digital',     time: '2026-05-18 14:02' },
+  { id: 4, user: 'Siti Nurhaliza', action: 'delete', target: 'Foto duplikat di Kunjungan SMA YPK',         time: '2026-05-17 10:15' },
+  { id: 5, user: 'Budi Hartono',   action: 'login',  target: 'Login admin',                                time: '2026-05-17 09:00' },
+  { id: 6, user: 'Rina Sari',      action: 'create', target: 'Kategori baru: Lomba',                       time: '2026-05-16 11:32' },
+  { id: 7, user: 'Siti Nurhaliza', action: 'update', target: 'Pengaturan pengguna Budi Hartono',           time: '2026-05-15 15:20' },
+];
+
+let currentUser = null;
+let lightboxState = { event: null, index: 0 };
+
+/* ============ HELPERS ============ */
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+
+function fmtDate(d) {
+  const opts = { day: 'numeric', month: 'long', year: 'numeric' };
+  return new Date(d).toLocaleDateString('id-ID', opts);
+}
+function catName(id) { return CATEGORIES.find(c => c.id === id)?.name || '-'; }
+function catColor(id) { return CATEGORIES.find(c => c.id === id)?.color || '#999'; }
+function catSlug(id) { return CATEGORIES.find(c => c.id === id)?.slug || ''; }
+
+/* SVG photo placeholder generator */
+function photoPlaceholder(seed, label = '', size = 'medium') {
+  const colors = [
+    ['#1d4f8f', '#2a66ad'], ['#0a1d3a', '#1d4f8f'], ['#d97d10', '#ec9628'],
+    ['#163d70', '#4a83c4'], ['#8e4a09', '#d97d10'], ['#102c55', '#2a66ad'],
+    ['#b6620a', '#f3b357'], ['#0d9488', '#14b8a6'], ['#7c3aed', '#a78bfa']
+  ];
+  const [c1, c2] = colors[seed % colors.length];
+  return `<div class="photo-svg w-full h-full" style="--c1:${c1};--c2:${c2}"><div class="photo-label">${label}</div></div>`;
+}
+
+function toast(msg, type = 'success') {
+  const colors = {
+    success: 'bg-emerald-600',
+    error: 'bg-red-600',
+    info: 'bg-brand-700'
+  };
+  const t = document.createElement('div');
+  t.className = `toast ${colors[type]} text-white px-4 py-3 rounded-lg shadow-2xl text-sm flex items-center gap-2 max-w-sm`;
+  t.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> ${msg}`;
+  $('#toast-container').appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+/* ============ ROUTING (public) ============ */
+function route(path) {
+  document.getElementById('mobile-nav')?.classList.add('hidden');
+  $$('[data-nav]').forEach(a => a.classList.toggle('active', a.dataset.nav === path));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const main = $('#public-main');
+  if (path === '/') main.innerHTML = renderHome();
+  else if (path === '/jelajah') main.innerHTML = renderBrowse();
+  else if (path === '/tahun') main.innerHTML = renderTimeline();
+  else if (path === '/tentang') main.innerHTML = renderAbout();
+  else if (path.startsWith('/kegiatan/')) main.innerHTML = renderDetail(path.split('/')[2]);
+  // Re-bind listeners as needed
+  initBrowseFilters();
+}
+
+window.addEventListener('hashchange', () => {
+  const p = location.hash.replace('#', '') || '/';
+  route(p);
+});
+
+/* ============ PUBLIC: HOME ============ */
+function renderHome() {
+  const featured = EVENTS[0];
+  const recent = EVENTS.slice(0, 8);
+  const totalPhotos = EVENTS.reduce((s, e) => s + e.photo_count, 0);
+  const years = [...new Set(EVENTS.map(e => e.year))].sort((a, b) => b - a);
+
+  return `
+  <!-- HERO -->
+  <section class="relative bg-gradient-to-br from-brand-900 via-brand-800 to-brand-700 text-white overflow-hidden">
+    <div class="absolute inset-0 batik-pattern opacity-60"></div>
+    <div class="absolute top-0 right-0 w-1/3 h-full opacity-20 pointer-events-none">
+      <svg viewBox="0 0 200 200" class="w-full h-full">
+        <circle cx="100" cy="100" r="80" fill="none" stroke="#f3b357" stroke-width="1"/>
+        <circle cx="100" cy="100" r="60" fill="none" stroke="#f3b357" stroke-width="1"/>
+        <circle cx="100" cy="100" r="40" fill="none" stroke="#f3b357" stroke-width="1"/>
+        <path d="M100 20 L100 180 M20 100 L180 100" stroke="#f3b357" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="relative max-w-7xl mx-auto px-4 py-20 md:py-28">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 bg-accent-500/15 border border-accent-400/30 text-accent-200 text-xs font-medium px-3 py-1.5 rounded-full mb-5">
+          <span class="w-1.5 h-1.5 bg-accent-300 rounded-full animate-pulse"></span>
+          Arsip Digital Resmi · Pemerintah Kota Bontang
+        </div>
+        <h1 class="font-serif text-4xl md:text-6xl font-semibold leading-tight mb-5">
+          Merekam Jejak Literasi <span class="text-accent-300">Kota Bontang</span> dari Tahun ke Tahun
+        </h1>
+        <p class="text-brand-100 text-lg leading-relaxed mb-8 max-w-2xl">
+          Jelajahi dokumentasi foto kegiatan Perpustakaan & Kearsipan Daerah Kota Bontang. Akses bebas,
+          tanpa daftar — sebagai bagian dari memori kolektif masyarakat Kalimantan Timur.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a href="#/jelajah" onclick="route('/jelajah')" class="bg-accent-500 hover:bg-accent-600 text-white px-6 py-3 rounded-xl font-semibold text-sm transition inline-flex items-center gap-2">
+            Jelajah Arsip
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7-7 7M5 12h16"/></svg>
+          </a>
+          <button onclick="openSearch()" class="bg-white/10 hover:bg-white/20 border border-white/30 text-white px-6 py-3 rounded-xl font-semibold text-sm transition inline-flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 110-16 8 8 0 010 16z"/></svg>
+            Cari Cepat
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATISTICS -->
+  <section class="max-w-7xl mx-auto px-4 -mt-12 relative z-10">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      ${[
+        { icon: 'event', label: 'Kegiatan Terarsip', value: EVENTS.length },
+        { icon: 'photo', label: 'Total Foto', value: totalPhotos.toLocaleString('id-ID') },
+        { icon: 'year',  label: 'Rentang Tahun', value: years[years.length-1] + '–' + years[0] },
+        { icon: 'cat',   label: 'Kategori', value: CATEGORIES.length },
+      ].map(s => `
+        <div class="bg-white rounded-2xl p-5 shadow-soft border border-slate-100">
+          <div class="w-10 h-10 rounded-xl bg-accent-100 text-accent-600 flex items-center justify-center mb-3">
+            ${s.icon === 'event' ? '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M3 11h18M5 5h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z"/></svg>' :
+              s.icon === 'photo' ? '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z M4 16l4-4 5 5 3-3 4 4"/></svg>' :
+              s.icon === 'year'  ? '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' :
+              '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5a2 2 0 011.41.59l7 7a2 2 0 010 2.82l-7 7a2 2 0 01-2.82 0l-7-7A2 2 0 013 11V6a3 3 0 013-3h1z"/></svg>'}
+          </div>
+          <div class="text-2xl md:text-3xl font-bold text-brand-900">${s.value}</div>
+          <div class="text-xs text-slate-500 mt-1">${s.label}</div>
+        </div>
+      `).join('')}
+    </div>
+  </section>
+
+  <!-- YEAR NAVIGATION -->
+  <section class="max-w-7xl mx-auto px-4 mt-16">
+    <div class="flex items-end justify-between mb-6">
+      <div>
+        <div class="text-xs font-medium text-accent-600 uppercase tracking-wider mb-1">Lini Masa</div>
+        <h2 class="font-serif text-3xl font-semibold text-brand-900">Telusuri Berdasarkan Tahun</h2>
+      </div>
+      <a href="#/tahun" onclick="route('/tahun')" class="text-sm text-brand-600 hover:text-brand-800 inline-flex items-center gap-1 font-medium">
+        Lihat semua tahun
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+      ${years.map((y, i) => {
+        const count = EVENTS.filter(e => e.year === y).length;
+        return `
+        <a href="#/jelajah?year=${y}" onclick="route('/jelajah?year=${y}')" class="group bg-gradient-to-br ${i % 2 === 0 ? 'from-brand-700 to-brand-600' : 'from-accent-600 to-accent-500'} text-white rounded-2xl p-5 shadow-card transition transform hover:-translate-y-1">
+          <div class="text-3xl font-bold">${y}</div>
+          <div class="text-xs opacity-80 mt-1">${count} kegiatan</div>
+          <div class="mt-4 flex items-center gap-1 text-xs font-medium opacity-90 group-hover:opacity-100">
+            Telusuri
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          </div>
+        </a>`;
+      }).join('')}
+    </div>
+  </section>
+
+  <!-- FEATURED -->
+  <section class="max-w-7xl mx-auto px-4 mt-16">
+    <div class="bg-white rounded-3xl overflow-hidden shadow-card grid md:grid-cols-2">
+      <div class="aspect-photo md:aspect-auto">
+        ${photoPlaceholder(featured.cover_seed, featured.title)}
+      </div>
+      <div class="p-8 md:p-12 flex flex-col justify-center">
+        <div class="flex items-center gap-2 text-xs mb-3">
+          <span class="bg-accent-100 text-accent-700 px-2.5 py-1 rounded-full font-medium">PILIHAN ARSIPARIS</span>
+          <span class="text-slate-500">${fmtDate(featured.date)}</span>
+        </div>
+        <h3 class="font-serif text-2xl md:text-3xl font-semibold text-brand-900 mb-3 leading-tight">${featured.title}</h3>
+        <p class="text-slate-600 leading-relaxed mb-5">${featured.description}</p>
+        <div class="flex items-center gap-4 text-xs text-slate-500 mb-6">
+          <span class="inline-flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-3-3h-5a3 3 0 00-3 3v2zm-7 0v-2a3 3 0 013-3h5a3 3 0 013 3v2"/></svg> ${featured.photo_count} foto</span>
+          <span class="inline-flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg> ${featured.location}</span>
+        </div>
+        <button onclick="route('/kegiatan/${featured.slug}')" class="self-start bg-brand-700 hover:bg-brand-800 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition">Lihat Galeri Lengkap →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECENT EVENTS GRID -->
+  <section class="max-w-7xl mx-auto px-4 mt-16">
+    <div class="flex items-end justify-between mb-6">
+      <div>
+        <div class="text-xs font-medium text-accent-600 uppercase tracking-wider mb-1">Arsip Terbaru</div>
+        <h2 class="font-serif text-3xl font-semibold text-brand-900">Kegiatan Terkini</h2>
+      </div>
+      <a href="#/jelajah" onclick="route('/jelajah')" class="text-sm text-brand-600 hover:text-brand-800 inline-flex items-center gap-1 font-medium">
+        Lihat semua
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      ${recent.map(e => renderEventCard(e)).join('')}
+    </div>
+  </section>
+
+  <!-- CATEGORIES STRIP -->
+  <section class="max-w-7xl mx-auto px-4 mt-16">
+    <div class="flex items-end justify-between mb-6">
+      <div>
+        <div class="text-xs font-medium text-accent-600 uppercase tracking-wider mb-1">Berdasarkan Kategori</div>
+        <h2 class="font-serif text-3xl font-semibold text-brand-900">Jelajahi Kategori</h2>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      ${CATEGORIES.map(c => {
+        const count = EVENTS.filter(e => e.category_id === c.id).length;
+        return `
+        <a href="#/jelajah?cat=${c.slug}" onclick="route('/jelajah?cat=${c.slug}')" class="bg-white border border-slate-200 hover:border-brand-300 rounded-2xl p-5 text-center transition group">
+          <div class="w-12 h-12 mx-auto rounded-xl mb-3 flex items-center justify-center text-white font-bold" style="background:${c.color}">
+            ${c.name.charAt(0)}
+          </div>
+          <div class="font-semibold text-sm text-brand-900 group-hover:text-accent-600">${c.name}</div>
+          <div class="text-xs text-slate-500 mt-0.5">${count} kegiatan</div>
+        </a>`;
+      }).join('')}
+    </div>
+  </section>
+
+  <!-- CTA strip -->
+  <section class="max-w-7xl mx-auto px-4 mt-16 mb-4">
+    <div class="bg-gradient-to-r from-brand-800 to-brand-600 rounded-3xl p-8 md:p-12 text-white text-center relative overflow-hidden">
+      <div class="absolute inset-0 batik-pattern opacity-40"></div>
+      <div class="relative">
+        <h3 class="font-serif text-2xl md:text-3xl font-semibold mb-3">Dokumentasi dapat diunduh secara gratis</h3>
+        <p class="text-brand-100 mb-6 max-w-2xl mx-auto">
+          Seluruh foto pada arsip ini dapat diakses dan diunduh tanpa biaya untuk keperluan edukasi, riset, dan dokumentasi pribadi.
+        </p>
+        <a href="#/jelajah" onclick="route('/jelajah')" class="inline-block bg-accent-500 hover:bg-accent-600 text-white px-6 py-3 rounded-xl text-sm font-semibold transition">Mulai Jelajah</a>
+      </div>
+    </div>
+  </section>
+  `;
+}
+
+function renderEventCard(e) {
+  return `
+    <article onclick="route('/kegiatan/${e.slug}')" class="photo-card bg-white rounded-2xl overflow-hidden shadow-soft border border-slate-100 cursor-pointer">
+      <div class="aspect-photo relative">
+        ${photoPlaceholder(e.cover_seed, e.title)}
+        <div class="absolute top-3 left-3">
+          <span class="bg-white/95 backdrop-blur text-xs font-medium px-2.5 py-1 rounded-full" style="color:${catColor(e.category_id)}">
+            ${catName(e.category_id)}
+          </span>
+        </div>
+        <div class="absolute bottom-3 right-3 bg-black/40 backdrop-blur text-white text-xs px-2 py-1 rounded-md inline-flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"/></svg>
+          ${e.photo_count}
+        </div>
+      </div>
+      <div class="p-4">
+        <div class="text-xs text-slate-500 mb-1.5">${fmtDate(e.date)}</div>
+        <h3 class="font-semibold text-brand-900 leading-snug line-clamp-2 mb-1.5">${e.title}</h3>
+        <div class="text-xs text-slate-500 inline-flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+          ${e.location}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+/* ============ PUBLIC: BROWSE ============ */
+let browseState = { search: '', year: 'all', cat: 'all', sort: 'newest' };
+
+function renderBrowse() {
+  // Parse URL params
+  const hash = location.hash;
+  const params = new URLSearchParams(hash.split('?')[1] || '');
+  if (params.has('year')) browseState.year = params.get('year');
+  if (params.has('cat'))  browseState.cat  = params.get('cat');
+  if (params.has('q'))    browseState.search = params.get('q');
+
+  const years = ['all', ...new Set(EVENTS.map(e => e.year))].filter((v, i, a) => a.indexOf(v) === i);
+
+  return `
+  <section class="bg-gradient-to-br from-brand-50 to-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 py-10">
+      <div class="text-xs font-medium text-accent-600 uppercase tracking-wider mb-1">Jelajah Arsip</div>
+      <h1 class="font-serif text-3xl md:text-4xl font-semibold text-brand-900 mb-3">Telusuri Seluruh Dokumentasi Kegiatan</h1>
+      <p class="text-slate-600 max-w-2xl">Gunakan filter dan pencarian untuk menemukan kegiatan tertentu. Semua arsip dapat dilihat dan diunduh secara bebas.</p>
+    </div>
+  </section>
+
+  <section class="max-w-7xl mx-auto px-4 py-8">
+    <!-- Search + Filter Bar -->
+    <div class="bg-white border border-slate-200 rounded-2xl p-4 mb-6 shadow-soft">
+      <div class="flex flex-col md:flex-row gap-3">
+        <div class="flex-1 relative">
+          <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 110-16 8 8 0 010 16z"/></svg>
+          <input id="browse-search" type="text" value="${browseState.search}" placeholder="Cari judul kegiatan, lokasi, atau kata kunci..."
+            class="w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-400">
+        </div>
+        <select id="browse-year" class="px-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-400">
+          ${years.map(y => `<option value="${y}" ${browseState.year == y ? 'selected' : ''}>${y === 'all' ? 'Semua Tahun' : y}</option>`).join('')}
+        </select>
+        <select id="browse-sort" class="px-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-400">
+          <option value="newest" ${browseState.sort === 'newest' ? 'selected' : ''}>Terbaru</option>
+          <option value="oldest" ${browseState.sort === 'oldest' ? 'selected' : ''}>Terlama</option>
+          <option value="photos" ${browseState.sort === 'photos' ? 'selected' : ''}>Foto Terbanyak</option>
+          <option value="title"  ${browseState.sort === 'title'  ? 'selected' : ''}>Judul A–Z</option>
+        </select>
+      </div>
+
+      <!-- Category chips -->
+      <div class="flex flex-wrap gap-2 mt-4">
+        <button onclick="setBrowseCat('all')" class="chip ${browseState.cat === 'all' ? 'active' : ''} px-3 py-1.5 rounded-full text-xs font-medium border border-slate-300 bg-white text-slate-700 hover:border-brand-400">Semua Kategori</button>
+        ${CATEGORIES.map(c => `
+          <button onclick="setBrowseCat('${c.slug}')" class="chip ${browseState.cat === c.slug ? 'active' : ''} px-3 py-1.5 rounded-full text-xs font-medium border border-slate-300 bg-white text-slate-700 hover:border-brand-400">
+            <span class="inline-block w-2 h-2 rounded-full mr-1" style="background:${c.color}"></span>${c.name}
+          </button>
+        `).join('')}
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div id="browse-results"></div>
+  </section>
+  `;
+}
+
+function initBrowseFilters() {
+  const s = $('#browse-search'); const y = $('#browse-year'); const so = $('#browse-sort');
+  if (!s) return;
+  s.addEventListener('input', () => { browseState.search = s.value; renderBrowseResults(); });
+  y.addEventListener('change', () => { browseState.year = y.value; renderBrowseResults(); });
+  so.addEventListener('change', () => { browseState.sort = so.value; renderBrowseResults(); });
+  renderBrowseResults();
+}
+
+function setBrowseCat(slug) {
+  browseState.cat = slug;
+  $$('#browse-results').forEach(() => {}); // noop, just trigger
+  $$('.chip').forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+  renderBrowseResults();
+}
+
+function renderBrowseResults() {
+  let list = EVENTS.slice();
+  if (browseState.search) {
+    const q = browseState.search.toLowerCase();
+    list = list.filter(e => e.title.toLowerCase().includes(q) ||
+                            e.location.toLowerCase().includes(q) ||
+                            e.description.toLowerCase().includes(q));
+  }
+  if (browseState.year !== 'all') list = list.filter(e => String(e.year) === String(browseState.year));
+  if (browseState.cat !== 'all') list = list.filter(e => catSlug(e.category_id) === browseState.cat);
+
+  if (browseState.sort === 'newest') list.sort((a, b) => new Date(b.date) - new Date(a.date));
+  else if (browseState.sort === 'oldest') list.sort((a, b) => new Date(a.date) - new Date(b.date));
+  else if (browseState.sort === 'photos') list.sort((a, b) => b.photo_count - a.photo_count);
+  else if (browseState.sort === 'title')  list.sort((a, b) => a.title.localeCompare(b.title));
+
+  const r = $('#browse-results');
+  if (!r) return;
+  if (list.length === 0) {
+    r.innerHTML = `
+      <div class="bg-white border border-slate-200 rounded-2xl p-12 text-center">
+        <div class="w-16 h-16 mx-auto rounded-full bg-slate-100 flex items-center justify-center mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 110-16 8 8 0 010 16z"/></svg>
+        </div>
+        <h3 class="font-semibold text-brand-900 mb-1">Tidak ada hasil ditemukan</h3>
+        <p class="text-sm text-slate-500">Coba ubah filter atau kata kunci pencarian Anda.</p>
+      </div>`;
+    return;
+  }
+  r.innerHTML = `
+    <div class="flex items-center justify-between mb-4 text-sm">
+      <div class="text-slate-600">Menampilkan <strong class="text-brand-900">${list.length}</strong> dari ${EVENTS.length} kegiatan</div>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+      ${list.map(e => renderEventCard(e)).join('')}
+    </div>
+  `;
+}
+
+/* ============ PUBLIC: TIMELINE ============ */
+function renderTimeline() {
+  const years = [...new Set(EVENTS.map(e => e.year))].sort((a, b) => b - a);
+  return `
+  <section class="bg-gradient-to-br from-brand-50 to-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 py-10">
+      <div class="text-xs font-medium text-accent-600 uppercase tracking-wider mb-1">Lini Masa</div>
+      <h1 class="font-serif text-3xl md:text-4xl font-semibold text-brand-900 mb-3">Perjalanan Arsip dari Tahun ke Tahun</h1>
+      <p class="text-slate-600 max-w-2xl">Telusuri kronologi kegiatan literasi dan kepustakaan Kota Bontang berdasarkan tahun.</p>
+    </div>
+  </section>
+
+  <section class="max-w-7xl mx-auto px-4 py-10">
+    <div class="relative">
+      <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-accent-200"></div>
+      ${years.map((y, i) => {
+        const yearEvents = EVENTS.filter(e => e.year === y);
+        const isLeft = i % 2 === 0;
+        return `
+        <div class="relative mb-12 md:grid md:grid-cols-2 md:gap-8 ${isLeft ? '' : 'md:[direction:rtl]'}">
+          <div class="md:[direction:ltr] ${isLeft ? 'md:text-right md:pr-12' : 'md:pl-12'}">
+            <div class="ml-12 md:ml-0">
+              <div class="inline-block bg-brand-700 text-white font-bold text-2xl px-4 py-2 rounded-xl mb-3">${y}</div>
+              <div class="text-sm text-slate-600 mb-4">${yearEvents.length} kegiatan terarsip</div>
+              <div class="space-y-3">
+                ${yearEvents.slice(0, 3).map(e => `
+                  <div onclick="route('/kegiatan/${e.slug}')" class="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-card cursor-pointer transition ${isLeft ? 'md:ml-auto' : ''}" style="max-width: 24rem">
+                    <div class="text-xs mb-1" style="color:${catColor(e.category_id)}">${catName(e.category_id)}</div>
+                    <div class="font-semibold text-sm text-brand-900 mb-1 ${isLeft ? 'md:text-right' : ''}">${e.title}</div>
+                    <div class="text-xs text-slate-500 ${isLeft ? 'md:text-right' : ''}">${fmtDate(e.date)} · ${e.photo_count} foto</div>
+                  </div>
+                `).join('')}
+                ${yearEvents.length > 3 ? `<a href="#/jelajah?year=${y}" onclick="route('/jelajah?year=${y}')" class="inline-block text-xs text-accent-600 hover:text-accent-700 font-medium">+${yearEvents.length - 3} kegiatan lainnya →</a>` : ''}
+              </div>
+            </div>
+          </div>
+          <div class="absolute left-4 md:left-1/2 top-2 -translate-x-1/2 w-4 h-4 rounded-full bg-accent-500 border-4 border-white shadow"></div>
+        </div>`;
+      }).join('')}
+    </div>
+  </section>
+  `;
+}
+
+/* ============ PUBLIC: ABOUT ============ */
+function renderAbout() {
+  return `
+  <section class="bg-gradient-to-br from-brand-900 to-brand-700 text-white">
+    <div class="max-w-4xl mx-auto px-4 py-16 md:py-20 text-center">
+      <div class="text-xs font-medium text-accent-300 uppercase tracking-wider mb-2">Tentang Sistem</div>
+      <h1 class="font-serif text-4xl md:text-5xl font-semibold mb-5">Arsip Digital Perpusda Bontang</h1>
+      <p class="text-brand-100 text-lg leading-relaxed">
+        Platform arsip digital yang menyimpan, mengelola, dan menyajikan dokumentasi foto kegiatan
+        Dinas Perpustakaan & Kearsipan Daerah Kota Bontang sebagai memori kolektif masyarakat Kalimantan Timur.
+      </p>
+    </div>
+  </section>
+
+  <section class="max-w-4xl mx-auto px-4 py-12">
+    <div class="grid md:grid-cols-2 gap-6">
+      ${[
+        { title: 'Visi', body: 'Menjadikan arsip kegiatan perpustakaan sebagai warisan digital yang inklusif, terbuka, dan dapat diakses oleh seluruh masyarakat.', icon: 'star' },
+        { title: 'Misi', body: 'Menyediakan platform arsip yang mudah diakses, lengkap secara kronologis, dan mendukung kegiatan riset serta edukasi.', icon: 'target' },
+        { title: 'Akses Terbuka', body: 'Seluruh arsip dapat diakses dan diunduh tanpa biaya atau pendaftaran akun.', icon: 'eye' },
+        { title: 'Pengelolaan Tepercaya', body: 'Dikelola oleh tim arsiparis profesional Perpusda Bontang dengan standar pengarsipan digital.', icon: 'shield' },
+      ].map(c => `
+        <div class="bg-white border border-slate-200 rounded-2xl p-6">
+          <div class="w-12 h-12 rounded-xl bg-accent-100 text-accent-600 flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2L15 8.5L22 9.3L17 14.1L18.5 21L12 17.8L5.5 21L7 14.1L2 9.3L9 8.5L12 2Z"/></svg>
+          </div>
+          <h3 class="font-serif font-semibold text-xl text-brand-900 mb-2">${c.title}</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">${c.body}</p>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="bg-accent-50 border border-accent-200 rounded-2xl p-6 mt-8">
+      <h3 class="font-serif font-semibold text-xl text-accent-800 mb-3">Cara Menggunakan</h3>
+      <ol class="space-y-2 text-sm text-slate-700">
+        <li><strong>1.</strong> Klik <em>Jelajah Arsip</em> untuk melihat seluruh kegiatan yang tersedia.</li>
+        <li><strong>2.</strong> Gunakan filter <em>tahun</em>, <em>kategori</em>, atau kotak pencarian untuk mempersempit hasil.</li>
+        <li><strong>3.</strong> Klik kartu kegiatan untuk melihat galeri foto lengkap.</li>
+        <li><strong>4.</strong> Klik foto untuk membuka tampilan besar, lalu unduh dengan tombol <em>Unduh</em>.</li>
+      </ol>
+    </div>
+  </section>
+  `;
+}
+
+/* ============ PUBLIC: DETAIL ============ */
+function renderDetail(slug) {
+  const e = EVENTS.find(x => x.slug === slug);
+  if (!e) return `<div class="p-12 text-center text-slate-600">Kegiatan tidak ditemukan.</div>`;
+  // Generate photo set
+  const photos = Array.from({ length: e.photo_count }, (_, i) => ({ id: i, seed: e.cover_seed + i, label: `${e.title} — Foto ${i + 1}` }));
+
+  const sameCat = EVENTS.filter(x => x.category_id === e.category_id && x.id !== e.id).slice(0, 3);
+
+  return `
+  <!-- Breadcrumb -->
+  <div class="bg-slate-50 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 py-3 text-xs text-slate-500 flex items-center gap-2">
+      <a href="#/" onclick="route('/')" class="hover:text-brand-700">Beranda</a>
+      <span>/</span>
+      <a href="#/jelajah" onclick="route('/jelajah')" class="hover:text-brand-700">Jelajah Arsip</a>
+      <span>/</span>
+      <span class="text-brand-700 font-medium truncate">${e.title}</span>
+    </div>
+  </div>
+
+  <article class="max-w-7xl mx-auto px-4 py-8">
+    <header class="mb-8">
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="text-xs font-medium px-2.5 py-1 rounded-full text-white" style="background:${catColor(e.category_id)}">${catName(e.category_id)}</span>
+        <span class="text-xs text-slate-500">${fmtDate(e.date)}</span>
+      </div>
+      <h1 class="font-serif text-3xl md:text-5xl font-semibold text-brand-900 leading-tight mb-4">${e.title}</h1>
+      <p class="text-slate-600 text-lg max-w-3xl leading-relaxed">${e.description}</p>
+    </header>
+
+    <div class="grid lg:grid-cols-[1fr_320px] gap-8">
+      <!-- Photo Gallery -->
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-semibold text-brand-900">Galeri Foto (${photos.length})</h2>
+          <button onclick="openLightboxFor(${e.id}, 0)" class="text-sm text-accent-600 hover:text-accent-700 font-medium inline-flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            Buka mode galeri
+          </button>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          ${photos.map((p, i) => `
+            <button onclick="openLightboxFor(${e.id}, ${i})" class="photo-card aspect-photo rounded-xl overflow-hidden group relative">
+              ${photoPlaceholder(p.seed, p.label)}
+              <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition flex items-center justify-center opacity-0 group-hover:opacity-100">
+                <div class="bg-white/95 rounded-full p-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-brand-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                </div>
+              </div>
+            </button>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="space-y-4">
+        <div class="bg-white border border-slate-200 rounded-2xl p-5">
+          <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Informasi Kegiatan</h3>
+          <dl class="space-y-3 text-sm">
+            <div>
+              <dt class="text-xs text-slate-500 mb-0.5">Tanggal</dt>
+              <dd class="font-medium text-brand-900">${fmtDate(e.date)}</dd>
+            </div>
+            <div>
+              <dt class="text-xs text-slate-500 mb-0.5">Tahun Arsip</dt>
+              <dd class="font-medium text-brand-900">${e.year}</dd>
+            </div>
+            <div>
+              <dt class="text-xs text-slate-500 mb-0.5">Lokasi</dt>
+              <dd class="font-medium text-brand-900">${e.location}</dd>
+            </div>
+            <div>
+              <dt class="text-xs text-slate-500 mb-0.5">Kategori</dt>
+              <dd class="font-medium" style="color:${catColor(e.category_id)}">${catName(e.category_id)}</dd>
+            </div>
+            <div>
+              <dt class="text-xs text-slate-500 mb-0.5">Total Foto</dt>
+              <dd class="font-medium text-brand-900">${e.photo_count} foto</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="bg-gradient-to-br from-brand-700 to-brand-600 rounded-2xl p-5 text-white">
+          <div class="text-xs uppercase tracking-wider text-brand-200 mb-2">Akses Bebas</div>
+          <h3 class="font-serif text-lg font-semibold mb-2">Unduh foto secara gratis</h3>
+          <p class="text-xs text-brand-100 mb-4">Foto dapat digunakan untuk kepentingan edukasi dan dokumentasi pribadi.</p>
+          <button onclick="openLightboxFor(${e.id}, 0)" class="w-full bg-accent-500 hover:bg-accent-600 text-white py-2 rounded-lg text-sm font-medium transition">Buka Galeri</button>
+        </div>
+
+        ${sameCat.length > 0 ? `
+        <div class="bg-white border border-slate-200 rounded-2xl p-5">
+          <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Kegiatan Sejenis</h3>
+          <div class="space-y-3">
+            ${sameCat.map(s => `
+              <a href="#/kegiatan/${s.slug}" onclick="route('/kegiatan/${s.slug}')" class="block group">
+                <div class="font-medium text-sm text-brand-900 group-hover:text-accent-600 line-clamp-2 leading-snug">${s.title}</div>
+                <div class="text-xs text-slate-500 mt-0.5">${fmtDate(s.date)}</div>
+              </a>
+            `).join('')}
+          </div>
+        </div>` : ''}
+      </aside>
+    </div>
+  </article>
+  `;
+}
+
+/* ============ LIGHTBOX ============ */
+function openLightboxFor(eventId, idx) {
+  const e = EVENTS.find(x => x.id === eventId);
+  if (!e) return;
+  lightboxState = { event: e, index: idx };
+  renderLightboxPhoto();
+  $('#lightbox').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  $('#lightbox').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+function lightboxPrev() {
+  if (lightboxState.index > 0) lightboxState.index--;
+  else lightboxState.index = lightboxState.event.photo_count - 1;
+  renderLightboxPhoto();
+}
+function lightboxNext() {
+  if (lightboxState.index < lightboxState.event.photo_count - 1) lightboxState.index++;
+  else lightboxState.index = 0;
+  renderLightboxPhoto();
+}
+function renderLightboxPhoto() {
+  const e = lightboxState.event;
+  const i = lightboxState.index;
+  $('#lightbox-photo').innerHTML = photoPlaceholder(e.cover_seed + i, `${e.title} — Foto ${i + 1}`);
+  $('#lightbox-caption').textContent = `${e.title}`;
+  $('#lightbox-meta').textContent = `Foto ${i + 1} dari ${e.photo_count} · ${fmtDate(e.date)} · ${e.location}`;
+}
+function downloadPhoto() {
+  toast(`Foto "${lightboxState.event.title} #${lightboxState.index + 1}" mulai diunduh (simulasi)`, 'success');
+}
+
+/* keyboard shortcuts */
+document.addEventListener('keydown', (e) => {
+  if (!$('#lightbox').classList.contains('hidden')) {
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') lightboxPrev();
+    if (e.key === 'ArrowRight') lightboxNext();
+  }
+  if (!$('#search-overlay').classList.contains('hidden')) {
+    if (e.key === 'Escape') closeSearch();
+  }
+});
+
+/* ============ SEARCH ============ */
+function openSearch() {
+  $('#search-overlay').classList.remove('hidden');
+  $('#search-input').focus();
+  renderSearchResults('');
+}
+function closeSearch() {
+  $('#search-overlay').classList.add('hidden');
+  $('#search-input').value = '';
+}
+function renderSearchResults(q) {
+  const list = q ? EVENTS.filter(e => e.title.toLowerCase().includes(q.toLowerCase()) ||
+                                      e.location.toLowerCase().includes(q.toLowerCase())).slice(0, 8) : EVENTS.slice(0, 5);
+  if (list.length === 0) {
+    $('#search-results').innerHTML = `<div class="p-6 text-center text-sm text-slate-500">Tidak ada hasil untuk "${q}"</div>`;
+    return;
+  }
+  $('#search-results').innerHTML = list.map(e => `
+    <a href="#/kegiatan/${e.slug}" onclick="closeSearch(); route('/kegiatan/${e.slug}')" class="block px-5 py-3 hover:bg-slate-50 border-b border-slate-100 last:border-0">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">${photoPlaceholder(e.cover_seed, '')}</div>
+        <div class="flex-1 min-w-0">
+          <div class="font-medium text-sm text-brand-900 truncate">${e.title}</div>
+          <div class="text-xs text-slate-500">${fmtDate(e.date)} · ${catName(e.category_id)}</div>
+        </div>
+      </div>
+    </a>
+  `).join('');
+}
+document.addEventListener('input', (e) => {
+  if (e.target.id === 'search-input') renderSearchResults(e.target.value);
+});
+
+/* ============ ADMIN LOGIN ============ */
+function showAdminLogin() { $('#admin-login-modal').classList.remove('hidden'); }
+function closeAdminLogin() {
+  $('#admin-login-modal').classList.add('hidden');
+  $('#login-error').classList.add('hidden');
+}
+function handleAdminLogin(ev) {
+  ev.preventDefault();
+  const email = $('#login-email').value;
+  const pwd = $('#login-password').value;
+  const user = USERS.find(u => u.email === email);
+  if (user && pwd === 'admin123') {
+    currentUser = user;
+    closeAdminLogin();
+    enterAdmin();
+  } else {
+    const err = $('#login-error');
+    err.textContent = 'Email atau kata sandi salah.';
+    err.classList.remove('hidden');
+  }
+}
+function enterAdmin() {
+  $('#public-app').classList.add('hidden');
+  $('#admin-app').classList.remove('hidden');
+  $('#admin-user-name').textContent = currentUser.name;
+  $('#admin-user-role').textContent = currentUser.role === 'super_admin' ? 'Super Admin' : 'Admin';
+  $('#admin-user-info .w-9').textContent = currentUser.avatar;
+  adminRoute('dashboard');
+  toast(`Selamat datang, ${currentUser.name}!`, 'success');
+}
+function exitAdmin() {
+  $('#admin-app').classList.add('hidden');
+  $('#public-app').classList.remove('hidden');
+  route('/');
+}
+function adminLogout() {
+  currentUser = null;
+  $('#admin-app').classList.add('hidden');
+  $('#public-app').classList.remove('hidden');
+  route('/');
+  toast('Anda berhasil keluar', 'info');
+}
+
+/* ============ ADMIN ROUTING ============ */
+function adminRoute(page, ...args) {
+  $$('[data-admin-nav]').forEach(a => a.classList.toggle('active', a.dataset.adminNav === page));
+  const titles = {
+    dashboard: ['Dashboard', 'Ringkasan sistem arsip digital'],
+    events: ['Manajemen Kegiatan', 'Kelola dokumentasi kegiatan Perpusda'],
+    'event-form': ['Tambah Kegiatan', 'Buat dokumentasi kegiatan baru'],
+    'event-edit': ['Edit Kegiatan', 'Perbarui detail kegiatan'],
+    photos: ['Manajemen Foto', 'Kelola foto yang tersimpan di sistem'],
+    categories: ['Kategori', 'Atur kategori kegiatan'],
+    users: ['Pengguna', 'Kelola akun pengelola arsip'],
+    logs: ['Log Aktivitas', 'Jejak audit aksi admin'],
+  };
+  const t = titles[page] || titles.dashboard;
+  $('#admin-page-title').textContent = t[0];
+  $('#admin-page-subtitle').textContent = t[1];
+  const m = $('#admin-main');
+  if (page === 'dashboard') m.innerHTML = renderAdminDashboard();
+  else if (page === 'events') m.innerHTML = renderAdminEvents();
+  else if (page === 'event-form') m.innerHTML = renderAdminEventForm();
+  else if (page === 'event-edit') m.innerHTML = renderAdminEventForm(args[0]);
+  else if (page === 'photos') m.innerHTML = renderAdminPhotos();
+  else if (page === 'categories') m.innerHTML = renderAdminCategories();
+  else if (page === 'users') m.innerHTML = renderAdminUsers();
+  else if (page === 'logs') m.innerHTML = renderAdminLogs();
+}
+
+/* ============ ADMIN: DASHBOARD ============ */
+function renderAdminDashboard() {
+  const totalPhotos = EVENTS.reduce((s, e) => s + e.photo_count, 0);
+  const years = [...new Set(EVENTS.map(e => e.year))].sort((a, b) => b - a);
+  const thisYearEvents = EVENTS.filter(e => e.year === Math.max(...years)).length;
+  return `
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    ${[
+      { label: 'Total Kegiatan', value: EVENTS.length, change: '+3 bulan ini', color: 'brand', icon: 'event' },
+      { label: 'Total Foto', value: totalPhotos.toLocaleString('id-ID'), change: '+18 minggu ini', color: 'accent', icon: 'photo' },
+      { label: 'Kegiatan Tahun Ini', value: thisYearEvents, change: 'Tahun ' + Math.max(...years), color: 'emerald', icon: 'year' },
+      { label: 'Pengguna Aktif', value: USERS.length, change: '1 super admin', color: 'violet', icon: 'user' },
+    ].map(s => `
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-soft">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 rounded-xl bg-${s.color}-100 text-${s.color}-600 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M3 11h18M5 5h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z"/></svg>
+          </div>
+        </div>
+        <div class="text-2xl font-bold text-brand-900">${s.value}</div>
+        <div class="text-xs text-slate-500 mt-1">${s.label}</div>
+        <div class="text-xs text-emerald-600 mt-2 font-medium">↑ ${s.change}</div>
+      </div>
+    `).join('')}
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-6 mb-6">
+    <!-- Year chart -->
+    <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200 shadow-soft">
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="font-semibold text-brand-900">Jumlah Kegiatan per Tahun</h3>
+        <div class="text-xs text-slate-500">5 tahun terakhir</div>
+      </div>
+      <div class="space-y-3">
+        ${years.map(y => {
+          const count = EVENTS.filter(e => e.year === y).length;
+          const max = Math.max(...years.map(yy => EVENTS.filter(e => e.year === yy).length));
+          const pct = (count / max) * 100;
+          return `
+          <div>
+            <div class="flex justify-between text-xs mb-1.5">
+              <span class="font-medium text-slate-700">${y}</span>
+              <span class="text-slate-500">${count} kegiatan</span>
+            </div>
+            <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-brand-600 to-accent-500 rounded-full" style="width:${pct}%"></div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <!-- Category breakdown -->
+    <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-soft">
+      <h3 class="font-semibold text-brand-900 mb-5">Distribusi Kategori</h3>
+      <div class="space-y-3">
+        ${CATEGORIES.map(c => {
+          const count = EVENTS.filter(e => e.category_id === c.id).length;
+          return `
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <span class="w-3 h-3 rounded-full" style="background:${c.color}"></span>
+              <span class="text-sm text-slate-700">${c.name}</span>
+            </div>
+            <span class="text-sm font-semibold text-brand-900">${count}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-2 gap-6">
+    <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-soft">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-semibold text-brand-900">Aksi Cepat</h3>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="adminRoute('event-form')" class="bg-accent-500 hover:bg-accent-600 text-white px-4 py-3 rounded-xl text-sm font-medium transition inline-flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          Kegiatan Baru
+        </button>
+        <button onclick="adminRoute('photos')" class="bg-brand-700 hover:bg-brand-800 text-white px-4 py-3 rounded-xl text-sm font-medium transition inline-flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"/></svg>
+          Kelola Foto
+        </button>
+        <button onclick="adminRoute('categories')" class="bg-white border border-slate-300 hover:bg-slate-50 text-brand-700 px-4 py-3 rounded-xl text-sm font-medium transition inline-flex items-center justify-center gap-2">
+          Kategori
+        </button>
+        <button onclick="adminRoute('logs')" class="bg-white border border-slate-300 hover:bg-slate-50 text-brand-700 px-4 py-3 rounded-xl text-sm font-medium transition inline-flex items-center justify-center gap-2">
+          Log Aktivitas
+        </button>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-soft">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-semibold text-brand-900">Aktivitas Terbaru</h3>
+        <a href="#" onclick="adminRoute('logs')" class="text-xs text-accent-600 hover:text-accent-700 font-medium">Lihat semua</a>
+      </div>
+      <div class="space-y-3">
+        ${ACTIVITY_LOGS.slice(0, 4).map(l => `
+          <div class="flex items-start gap-3 text-sm">
+            <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-medium text-xs flex-shrink-0">${l.user.charAt(0)}</div>
+            <div class="flex-1 min-w-0">
+              <div class="text-slate-800 leading-snug"><strong>${l.user}</strong> ${actionVerb(l.action)} <span class="text-slate-600">${l.target}</span></div>
+              <div class="text-xs text-slate-400 mt-0.5">${l.time}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  </div>
+  `;
+}
+
+function actionVerb(action) {
+  return { create: 'membuat', update: 'memperbarui', delete: 'menghapus', upload: 'mengunggah', login: '' }[action] || action;
+}
+
+/* ============ ADMIN: EVENTS ============ */
+let eventsTableState = { search: '', year: 'all', cat: 'all', page: 1, perPage: 8 };
+
+function renderAdminEvents() {
+  const years = [...new Set(EVENTS.map(e => e.year))].sort((a, b) => b - a);
+  return `
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
+    <div class="p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex flex-wrap items-center gap-2 flex-1">
+        <div class="relative flex-1 min-w-[200px] max-w-md">
+          <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 110-16 8 8 0 010 16z"/></svg>
+          <input id="evt-search" type="text" placeholder="Cari kegiatan..." class="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400">
+        </div>
+        <select id="evt-year" class="px-3 py-2 border border-slate-300 rounded-lg text-sm">
+          <option value="all">Semua Tahun</option>
+          ${years.map(y => `<option value="${y}">${y}</option>`).join('')}
+        </select>
+        <select id="evt-cat" class="px-3 py-2 border border-slate-300 rounded-lg text-sm">
+          <option value="all">Semua Kategori</option>
+          ${CATEGORIES.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+        </select>
+      </div>
+      <button onclick="adminRoute('event-form')" class="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition inline-flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        Tambah Kegiatan
+      </button>
+    </div>
+
+    <div id="events-table-body"></div>
+  </div>
+  `;
+}
+
+function renderEventsTableBody() {
+  let list = EVENTS.slice();
+  if (eventsTableState.search) {
+    const q = eventsTableState.search.toLowerCase();
+    list = list.filter(e => e.title.toLowerCase().includes(q));
+  }
+  if (eventsTableState.year !== 'all') list = list.filter(e => String(e.year) === String(eventsTableState.year));
+  if (eventsTableState.cat !== 'all') list = list.filter(e => e.category_id === Number(eventsTableState.cat));
+
+  const start = (eventsTableState.page - 1) * eventsTableState.perPage;
+  const paged = list.slice(start, start + eventsTableState.perPage);
+  const totalPages = Math.max(1, Math.ceil(list.length / eventsTableState.perPage));
+
+  const body = $('#events-table-body');
+  if (!body) return;
+  body.innerHTML = `
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase tracking-wider">
+          <tr>
+            <th class="text-left px-5 py-3 font-medium">Kegiatan</th>
+            <th class="text-left px-5 py-3 font-medium">Kategori</th>
+            <th class="text-left px-5 py-3 font-medium">Tanggal</th>
+            <th class="text-left px-5 py-3 font-medium">Foto</th>
+            <th class="text-left px-5 py-3 font-medium">Status</th>
+            <th class="text-right px-5 py-3 font-medium">Aksi</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          ${paged.map(e => `
+            <tr class="hover:bg-slate-50">
+              <td class="px-5 py-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">${photoPlaceholder(e.cover_seed, '')}</div>
+                  <div class="min-w-0">
+                    <div class="font-medium text-brand-900 truncate max-w-xs">${e.title}</div>
+                    <div class="text-xs text-slate-500 truncate max-w-xs">${e.location}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-5 py-3">
+                <span class="inline-flex items-center gap-1.5 text-xs">
+                  <span class="w-2 h-2 rounded-full" style="background:${catColor(e.category_id)}"></span>
+                  ${catName(e.category_id)}
+                </span>
+              </td>
+              <td class="px-5 py-3 text-slate-600">${fmtDate(e.date)}</td>
+              <td class="px-5 py-3 text-slate-600">${e.photo_count}</td>
+              <td class="px-5 py-3">
+                ${e.is_published
+                  ? '<span class="inline-flex items-center gap-1 text-xs bg-emerald-50 text-emerald-700 px-2 py-1 rounded-full font-medium"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>Publik</span>'
+                  : '<span class="inline-flex items-center gap-1 text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-full font-medium"><span class="w-1.5 h-1.5 bg-slate-400 rounded-full"></span>Draf</span>'}
+              </td>
+              <td class="px-5 py-3 text-right">
+                <div class="inline-flex items-center gap-1">
+                  <button onclick="togglePublish(${e.id})" title="Toggle publish" class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                  </button>
+                  <button onclick="adminRoute('event-edit', ${e.id})" title="Edit" class="p-1.5 rounded-lg hover:bg-brand-100 text-brand-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                  </button>
+                  <button onclick="deleteEvent(${e.id})" title="Hapus" class="p-1.5 rounded-lg hover:bg-red-100 text-red-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div class="p-4 border-t border-slate-200 flex items-center justify-between text-sm">
+      <div class="text-slate-600">Menampilkan ${paged.length} dari ${list.length} kegiatan</div>
+      <div class="flex items-center gap-1">
+        <button onclick="setEventsPage(${eventsTableState.page - 1})" ${eventsTableState.page === 1 ? 'disabled' : ''} class="px-3 py-1 rounded-lg border border-slate-300 disabled:opacity-50">‹</button>
+        ${Array.from({ length: totalPages }, (_, i) => i + 1).map(p => `
+          <button onclick="setEventsPage(${p})" class="px-3 py-1 rounded-lg ${p === eventsTableState.page ? 'bg-brand-700 text-white' : 'border border-slate-300'}">${p}</button>
+        `).join('')}
+        <button onclick="setEventsPage(${eventsTableState.page + 1})" ${eventsTableState.page === totalPages ? 'disabled' : ''} class="px-3 py-1 rounded-lg border border-slate-300 disabled:opacity-50">›</button>
+      </div>
+    </div>
+  `;
+}
+function setEventsPage(p) { eventsTableState.page = p; renderEventsTableBody(); }
+
+document.addEventListener('input', (e) => {
+  if (e.target.id === 'evt-search') { eventsTableState.search = e.target.value; eventsTableState.page = 1; renderEventsTableBody(); }
+});
+document.addEventListener('change', (e) => {
+  if (e.target.id === 'evt-year') { eventsTableState.year = e.target.value; eventsTableState.page = 1; renderEventsTableBody(); }
+  if (e.target.id === 'evt-cat')  { eventsTableState.cat  = e.target.value; eventsTableState.page = 1; renderEventsTableBody(); }
+});
+
+function togglePublish(id) {
+  const e = EVENTS.find(x => x.id === id);
+  e.is_published = !e.is_published;
+  logActivity(currentUser.name, 'update', `Status publikasi: ${e.title} → ${e.is_published ? 'Publik' : 'Draf'}`);
+  renderEventsTableBody();
+  toast(`Kegiatan ${e.is_published ? 'dipublikasikan' : 'disimpan sebagai draf'}`);
+}
+
+function deleteEvent(id) {
+  const e = EVENTS.find(x => x.id === id);
+  if (!confirm(`Yakin hapus "${e.title}"? Foto-fotonya akan ikut terhapus.`)) return;
+  EVENTS = EVENTS.filter(x => x.id !== id);
+  logActivity(currentUser.name, 'delete', `Kegiatan: ${e.title}`);
+  renderEventsTableBody();
+  toast('Kegiatan dihapus', 'error');
+}
+
+/* ============ ADMIN: EVENT FORM ============ */
+function renderAdminEventForm(id) {
+  const editing = id != null;
+  const e = editing ? EVENTS.find(x => x.id === id) : { title: '', description: '', category_id: 1, date: '', location: '', year: new Date().getFullYear(), is_published: true };
+  return `
+  <form onsubmit="saveEvent(event, ${editing ? id : 'null'})" class="grid lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-6">
+        <h3 class="font-semibold text-brand-900 mb-4">Informasi Kegiatan</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="text-xs font-medium text-slate-700 block mb-1">Judul Kegiatan <span class="text-red-500">*</span></label>
+            <input name="title" required value="${e.title}" placeholder="Contoh: Festival Literasi Pesisir 2024"
+              class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400">
+          </div>
+          <div>
+            <label class="text-xs font-medium text-slate-700 block mb-1">Deskripsi</label>
+            <textarea name="description" rows="4" placeholder="Jelaskan kegiatan secara singkat..."
+              class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400">${e.description}</textarea>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="text-xs font-medium text-slate-700 block mb-1">Tanggal <span class="text-red-500">*</span></label>
+              <input name="date" type="date" required value="${e.date}"
+                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400">
+            </div>
+            <div>
+              <label class="text-xs font-medium text-slate-700 block mb-1">Lokasi</label>
+              <input name="location" value="${e.location}" placeholder="Contoh: Aula Perpusda"
+                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Photo upload -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-semibold text-brand-900">Foto Kegiatan</h3>
+          <span class="text-xs text-slate-500">JPG, PNG · maks 5 MB per foto · batch upload didukung</span>
+        </div>
+        <div id="upload-zone" class="upload-zone rounded-xl p-8 text-center cursor-pointer"
+          ondragover="event.preventDefault(); this.classList.add('dragover')"
+          ondragleave="this.classList.remove('dragover')"
+          ondrop="handleDrop(event)"
+          onclick="document.getElementById('file-input').click()">
+          <input id="file-input" type="file" multiple accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto text-brand-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+          <div class="font-medium text-brand-900 mb-1">Seret foto ke sini atau klik untuk pilih</div>
+          <div class="text-xs text-slate-500">Foto akan dikompresi otomatis ke 3 ukuran (thumb 300px, medium 800px, original)</div>
+        </div>
+        <div id="upload-preview" class="grid grid-cols-3 md:grid-cols-5 gap-3 mt-4"></div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-6">
+        <h3 class="font-semibold text-brand-900 mb-4">Publikasi</h3>
+        <label class="flex items-center gap-2 cursor-pointer mb-4">
+          <input type="checkbox" name="is_published" ${e.is_published ? 'checked' : ''} class="w-4 h-4 rounded text-brand-600 focus:ring-brand-400">
+          <span class="text-sm text-slate-700">Publikasikan ke halaman publik</span>
+        </label>
+        <div class="space-y-2">
+          <button type="submit" class="w-full bg-accent-500 hover:bg-accent-600 text-white py-2.5 rounded-xl text-sm font-medium transition">${editing ? 'Simpan Perubahan' : 'Simpan Kegiatan'}</button>
+          <button type="button" onclick="adminRoute('events')" class="w-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 py-2.5 rounded-xl text-sm font-medium transition">Batal</button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-6">
+        <h3 class="font-semibold text-brand-900 mb-4">Kategori</h3>
+        <select name="category_id" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400">
+          ${CATEGORIES.map(c => `<option value="${c.id}" ${e.category_id === c.id ? 'selected' : ''}>${c.name}</option>`).join('')}
+        </select>
+      </div>
+
+      <div class="bg-brand-50 border border-brand-200 rounded-2xl p-5 text-xs text-brand-800">
+        <div class="font-semibold mb-1">💡 Tips Arsiparis</div>
+        <p class="leading-relaxed">Gunakan judul deskriptif dengan tahun (misalnya: "Festival Literasi 2024") untuk memudahkan pencarian di kemudian hari.</p>
+      </div>
+    </div>
+  </form>
+  `;
+}
+
+let uploadedFiles = [];
+
+function handleFileSelect(ev) { addFiles([...ev.target.files]); }
+function handleDrop(ev) {
+  ev.preventDefault();
+  ev.target.classList.remove('dragover');
+  addFiles([...ev.dataTransfer.files]);
+}
+function addFiles(files) {
+  files.forEach(f => uploadedFiles.push(f.name));
+  renderUploadPreview();
+}
+function renderUploadPreview() {
+  const preview = $('#upload-preview');
+  if (!preview) return;
+  preview.innerHTML = uploadedFiles.map((name, i) => `
+    <div class="relative aspect-photo rounded-lg overflow-hidden group">
+      ${photoPlaceholder(i, name)}
+      <button type="button" onclick="removeUpload(${i})" class="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/60 hover:bg-red-600 text-white flex items-center justify-center text-xs">×</button>
+    </div>
+  `).join('');
+}
+function removeUpload(i) {
+  uploadedFiles.splice(i, 1);
+  renderUploadPreview();
+}
+
+function saveEvent(ev, id) {
+  ev.preventDefault();
+  const f = ev.target;
+  const data = {
+    title: f.title.value,
+    description: f.description.value,
+    date: f.date.value,
+    location: f.location.value,
+    category_id: Number(f.category_id.value),
+    is_published: f.is_published.checked,
+    year: new Date(f.date.value).getFullYear(),
+  };
+  if (id) {
+    const e = EVENTS.find(x => x.id === id);
+    Object.assign(e, data);
+    logActivity(currentUser.name, 'update', `Kegiatan: ${data.title}`);
+    toast('Perubahan disimpan');
+  } else {
+    const newE = {
+      id: EVENTS.length + 1,
+      slug: data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+      ...data,
+      photo_count: uploadedFiles.length || 3,
+      cover_seed: EVENTS.length + 1,
+      created_by: currentUser.id,
+    };
+    EVENTS.unshift(newE);
+    logActivity(currentUser.name, 'create', `Kegiatan: ${data.title}`);
+    if (uploadedFiles.length > 0) logActivity(currentUser.name, 'upload', `${uploadedFiles.length} foto ke ${data.title}`);
+    toast(`Kegiatan "${data.title}" disimpan`);
+  }
+  uploadedFiles = [];
+  adminRoute('events');
+}
+
+/* ============ ADMIN: PHOTOS ============ */
+function renderAdminPhotos() {
+  const allPhotos = EVENTS.flatMap(e => Array.from({ length: Math.min(e.photo_count, 4) }, (_, i) => ({ event: e, idx: i })));
+  return `
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-6">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h3 class="font-semibold text-brand-900">Foto Tersimpan</h3>
+        <p class="text-xs text-slate-500 mt-0.5">Menampilkan ${allPhotos.length} foto dari ${EVENTS.length} kegiatan</p>
+      </div>
+      <button onclick="adminRoute('event-form')" class="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition inline-flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        Unggah Foto
+      </button>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+      ${allPhotos.slice(0, 36).map(p => `
+        <div class="relative aspect-photo rounded-lg overflow-hidden group">
+          ${photoPlaceholder(p.event.cover_seed + p.idx, p.event.title.substring(0, 30))}
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition flex items-end p-2">
+            <div class="text-white text-xs">
+              <div class="font-medium truncate">${p.event.title}</div>
+              <div class="text-white/70">${fmtDate(p.event.date)}</div>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+  `;
+}
+
+/* ============ ADMIN: CATEGORIES ============ */
+function renderAdminCategories() {
+  return `
+  <div class="grid lg:grid-cols-[1fr_320px] gap-6">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
+      <div class="p-5 border-b border-slate-200">
+        <h3 class="font-semibold text-brand-900">Daftar Kategori</h3>
+      </div>
+      <table class="w-full text-sm">
+        <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase tracking-wider">
+          <tr>
+            <th class="text-left px-5 py-3 font-medium">Nama</th>
+            <th class="text-left px-5 py-3 font-medium">Slug</th>
+            <th class="text-left px-5 py-3 font-medium">Jumlah Kegiatan</th>
+            <th class="text-right px-5 py-3 font-medium">Aksi</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          ${CATEGORIES.map(c => `
+            <tr class="hover:bg-slate-50">
+              <td class="px-5 py-3">
+                <div class="flex items-center gap-2.5">
+                  <span class="w-3 h-3 rounded-full" style="background:${c.color}"></span>
+                  <span class="font-medium text-brand-900">${c.name}</span>
+                </div>
+              </td>
+              <td class="px-5 py-3 text-slate-600 font-mono text-xs">${c.slug}</td>
+              <td class="px-5 py-3 text-slate-600">${EVENTS.filter(e => e.category_id === c.id).length}</td>
+              <td class="px-5 py-3 text-right">
+                <button onclick="toast('Edit kategori (simulasi)')" class="p-1.5 rounded-lg hover:bg-brand-100 text-brand-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                </button>
+                <button onclick="deleteCategory(${c.id})" class="p-1.5 rounded-lg hover:bg-red-100 text-red-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6"/></svg>
+                </button>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-6 h-fit">
+      <h3 class="font-semibold text-brand-900 mb-4">Tambah Kategori</h3>
+      <form onsubmit="addCategory(event)" class="space-y-3">
+        <div>
+          <label class="text-xs font-medium text-slate-700 block mb-1">Nama Kategori</label>
+          <input name="name" required placeholder="Contoh: Workshop" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400">
+        </div>
+        <div>
+          <label class="text-xs font-medium text-slate-700 block mb-1">Warna</label>
+          <input name="color" type="color" value="#2a66ad" class="w-full h-10 border border-slate-300 rounded-lg cursor-pointer">
+        </div>
+        <button type="submit" class="w-full bg-brand-700 hover:bg-brand-800 text-white py-2 rounded-lg text-sm font-medium transition">Tambah</button>
+      </form>
+    </div>
+  </div>
+  `;
+}
+
+function addCategory(ev) {
+  ev.preventDefault();
+  const f = ev.target;
+  const name = f.name.value;
+  const color = f.color.value;
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  CATEGORIES.push({ id: CATEGORIES.length + 1, name, slug, color });
+  logActivity(currentUser.name, 'create', `Kategori baru: ${name}`);
+  toast(`Kategori "${name}" ditambahkan`);
+  adminRoute('categories');
+}
+
+function deleteCategory(id) {
+  const c = CATEGORIES.find(x => x.id === id);
+  if (!confirm(`Hapus kategori "${c.name}"?`)) return;
+  if (EVENTS.some(e => e.category_id === id)) {
+    toast('Kategori masih dipakai oleh kegiatan. Tidak bisa dihapus.', 'error');
+    return;
+  }
+  const idx = CATEGORIES.indexOf(c);
+  CATEGORIES.splice(idx, 1);
+  logActivity(currentUser.name, 'delete', `Kategori: ${c.name}`);
+  toast('Kategori dihapus', 'error');
+  adminRoute('categories');
+}
+
+/* ============ ADMIN: USERS ============ */
+function renderAdminUsers() {
+  return `
+  <div class="grid lg:grid-cols-[1fr_320px] gap-6">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+        <h3 class="font-semibold text-brand-900">Daftar Pengguna</h3>
+        <span class="text-xs text-slate-500">${USERS.length} pengguna</span>
+      </div>
+      <table class="w-full text-sm">
+        <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase tracking-wider">
+          <tr>
+            <th class="text-left px-5 py-3 font-medium">Pengguna</th>
+            <th class="text-left px-5 py-3 font-medium">Email</th>
+            <th class="text-left px-5 py-3 font-medium">Peran</th>
+            <th class="text-left px-5 py-3 font-medium">Login Terakhir</th>
+            <th class="text-right px-5 py-3 font-medium">Aksi</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          ${USERS.map(u => `
+            <tr class="hover:bg-slate-50">
+              <td class="px-5 py-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-full bg-brand-700 text-white flex items-center justify-center font-medium text-sm">${u.avatar}</div>
+                  <span class="font-medium text-brand-900">${u.name}</span>
+                </div>
+              </td>
+              <td class="px-5 py-3 text-slate-600">${u.email}</td>
+              <td class="px-5 py-3">
+                ${u.role === 'super_admin'
+                  ? '<span class="inline-flex items-center gap-1 text-xs bg-accent-100 text-accent-700 px-2 py-1 rounded-full font-medium">Super Admin</span>'
+                  : '<span class="inline-flex items-center gap-1 text-xs bg-brand-100 text-brand-700 px-2 py-1 rounded-full font-medium">Admin</span>'}
+              </td>
+              <td class="px-5 py-3 text-slate-600 text-xs">${u.last_login}</td>
+              <td class="px-5 py-3 text-right">
+                <button onclick="toast('Edit pengguna (simulasi)')" class="p-1.5 rounded-lg hover:bg-brand-100 text-brand-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                </button>
+                ${u.id !== currentUser.id && currentUser.role === 'super_admin' ? `
+                <button onclick="deleteUser(${u.id})" class="p-1.5 rounded-lg hover:bg-red-100 text-red-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6"/></svg>
+                </button>` : ''}
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    ${currentUser.role === 'super_admin' ? `
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-6 h-fit">
+      <h3 class="font-semibold text-brand-900 mb-4">Tambah Pengguna</h3>
+      <form onsubmit="addUser(event)" class="space-y-3">
+        <div>
+          <label class="text-xs font-medium text-slate-700 block mb-1">Nama Lengkap</label>
+          <input name="name" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400">
+        </div>
+        <div>
+          <label class="text-xs font-medium text-slate-700 block mb-1">Email</label>
+          <input name="email" type="email" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400">
+        </div>
+        <div>
+          <label class="text-xs font-medium text-slate-700 block mb-1">Peran</label>
+          <select name="role" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-400">
+            <option value="admin">Admin</option>
+            <option value="super_admin">Super Admin</option>
+          </select>
+        </div>
+        <button type="submit" class="w-full bg-brand-700 hover:bg-brand-800 text-white py-2 rounded-lg text-sm font-medium transition">Tambah Pengguna</button>
+      </form>
+    </div>` : `
+    <div class="bg-accent-50 border border-accent-200 rounded-2xl p-5 text-xs text-accent-800 h-fit">
+      <div class="font-semibold mb-1">ℹ️ Akses Terbatas</div>
+      <p>Hanya Super Admin yang dapat menambah atau menghapus pengguna.</p>
+    </div>`}
+  </div>
+  `;
+}
+function addUser(ev) {
+  ev.preventDefault();
+  const f = ev.target;
+  const name = f.name.value;
+  USERS.push({
+    id: USERS.length + 1, name, email: f.email.value, role: f.role.value,
+    last_login: '-', avatar: name.split(' ').map(x => x[0]).slice(0, 2).join('').toUpperCase()
+  });
+  logActivity(currentUser.name, 'create', `Pengguna baru: ${name}`);
+  toast(`Pengguna "${name}" ditambahkan`);
+  adminRoute('users');
+}
+function deleteUser(id) {
+  const u = USERS.find(x => x.id === id);
+  if (!confirm(`Hapus pengguna "${u.name}"?`)) return;
+  const i = USERS.indexOf(u);
+  USERS.splice(i, 1);
+  logActivity(currentUser.name, 'delete', `Pengguna: ${u.name}`);
+  toast('Pengguna dihapus', 'error');
+  adminRoute('users');
+}
+
+/* ============ ADMIN: LOGS ============ */
+function renderAdminLogs() {
+  return `
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
+    <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+      <div>
+        <h3 class="font-semibold text-brand-900">Jejak Audit Aktivitas Admin</h3>
+        <p class="text-xs text-slate-500 mt-0.5">Catatan semua aksi yang dilakukan oleh pengelola sistem</p>
+      </div>
+      <select class="px-3 py-2 border border-slate-300 rounded-lg text-sm">
+        <option>7 hari terakhir</option>
+        <option>30 hari terakhir</option>
+        <option>Semua waktu</option>
+      </select>
+    </div>
+    <div class="divide-y divide-slate-100">
+      ${ACTIVITY_LOGS.map(l => `
+        <div class="px-5 py-4 flex items-start gap-4 hover:bg-slate-50">
+          <div class="w-10 h-10 rounded-full ${logIconBg(l.action)} flex items-center justify-center flex-shrink-0">
+            ${logIcon(l.action)}
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm text-slate-800">
+              <strong class="text-brand-900">${l.user}</strong> ${actionVerb(l.action)} <span class="text-slate-600">${l.target}</span>
+            </div>
+            <div class="text-xs text-slate-500 mt-0.5">${l.time}</div>
+          </div>
+          <span class="text-xs px-2 py-1 rounded-full ${logBadge(l.action)} font-medium">${l.action}</span>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+  `;
+}
+
+function logIconBg(action) {
+  return {
+    create: 'bg-emerald-100', update: 'bg-brand-100', delete: 'bg-red-100',
+    upload: 'bg-accent-100', login: 'bg-violet-100'
+  }[action] || 'bg-slate-100';
+}
+function logIcon(action) {
+  const cls = {
+    create: 'text-emerald-600', update: 'text-brand-600', delete: 'text-red-600',
+    upload: 'text-accent-600', login: 'text-violet-600'
+  }[action] || 'text-slate-600';
+  const paths = {
+    create: '<path d="M12 4v16m8-8H4"/>',
+    update: '<path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>',
+    delete: '<path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7"/>',
+    upload: '<path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>',
+    login: '<path d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2v1"/>'
+  };
+  return `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ${cls}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><g stroke-linecap="round" stroke-linejoin="round">${paths[action] || ''}</g></svg>`;
+}
+function logBadge(action) {
+  return {
+    create: 'bg-emerald-50 text-emerald-700', update: 'bg-brand-50 text-brand-700',
+    delete: 'bg-red-50 text-red-700', upload: 'bg-accent-50 text-accent-700',
+    login: 'bg-violet-50 text-violet-700'
+  }[action] || 'bg-slate-100 text-slate-600';
+}
+
+function logActivity(user, action, target) {
+  ACTIVITY_LOGS.unshift({
+    id: ACTIVITY_LOGS.length + 1, user, action, target,
+    time: new Date().toLocaleString('sv-SE').replace('T', ' ').substring(0, 16)
+  });
+}
+
+/* ============ ADMIN: routing helper for events table ============ */
+const origAdminRoute = adminRoute;
+window.adminRoute = function(page, ...args) {
+  origAdminRoute(page, ...args);
+  if (page === 'events') setTimeout(renderEventsTableBody, 0);
+};
+
+/* ============ INIT ============ */
+window.addEventListener('DOMContentLoaded', () => {
+  const initial = location.hash.replace('#', '') || '/';
+  route(initial);
+});
+</script>
+
+</body>
+</html>
